@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 
-class QLineEdit;
+class QAction;
 
 class MainWindow : public QMainWindow
 {
@@ -17,13 +17,24 @@ private:
 
 	void createMenuBar();
 	void createFileMenu();
-	void createEditMenu();
+	void createBlockMenu();
+	void createInitialMenu();
+	void createCalculationMenu();
 
 	void createToolBar();
 	void createFileTool(QToolBar *toolBar);
 	void createEditTool(QToolBar *toolBar);
 
+	void createCentralWidget();
+
 private slots:
+
+private:
+	QAction *pOpenFile;
+	QAction *pSaveFile;
+	QAction *pSaveFileAs;
+	QAction *pAddDataBlock;
+	QAction *pAddProcessBlock;
 };
 
 #endif // MAINWINDOW_H

@@ -13,26 +13,58 @@ MainWindow::MainWindow(QWidget *parent)
 
 	createAction();
 	createMenuBar();
-	createToolBar();
+	createToolBar();	/// TODO: may be not need
+	createCentralWidget();
 }
 
 void MainWindow::createAction()
 {
+	pOpenFile = new QAction(tr("Open"), this);
+	pSaveFile = new QAction(tr("Save"), this);
+	pSaveFileAs = new QAction(tr("Save as..."), this);
+
+	pAddDataBlock = new QAction(tr("Add data block"), this);
+	pAddProcessBlock = new QAction(tr("Add process block"), this);
 }
 
 void MainWindow::createMenuBar()
 {
 	menuBar();
 	createFileMenu();
-	createEditMenu();
+	createBlockMenu();
+	createInitialMenu();
+	createCalculationMenu();
 }
 
 void MainWindow::createFileMenu()
 {
+	QMenu *fileMenu = new QMenu(tr("File"));
+	fileMenu->addAction(pOpenFile);
+	fileMenu->addAction(pSaveFile);
+	fileMenu->addAction(pSaveFileAs);
+	fileMenu->addSeparator();
+	fileMenu->addAction(tr("Exit"), this, SLOT(close()));
+	menuBar()->addMenu(fileMenu);
 }
 
-void MainWindow::createEditMenu()
+void MainWindow::createBlockMenu()
 {
+	QMenu *blocksMenu = new QMenu(tr("Blocks"));
+	blocksMenu->addAction(pAddDataBlock);
+	blocksMenu->addAction(pAddProcessBlock);
+	menuBar()->addMenu(blocksMenu);
+}
+
+void MainWindow::createInitialMenu()
+{
+	QMenu *initialMenu = new QMenu(tr("Initial data"));
+	menuBar()->addMenu(initialMenu);
+}
+
+void MainWindow::createCalculationMenu()
+{
+	QMenu *calculationMenu = new QMenu(tr("Calculation"));
+	menuBar()->addMenu(calculationMenu);
 }
 
 void MainWindow::createToolBar()
@@ -50,4 +82,12 @@ void MainWindow::createFileTool(QToolBar *toolBar)
 
 void MainWindow::createEditTool(QToolBar *toolBar)
 {
+}
+
+
+void MainWindow::createCentralWidget()
+{
+	/// TODO: replace on the real inheritance QGraphicsView widget
+	QWidget *widget = new QWidget();
+	setCentralWidget(widget);
 }
