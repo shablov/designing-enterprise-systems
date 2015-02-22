@@ -1,11 +1,11 @@
 #include "mainwindow.h"
-#include "scene.h"
-#include <QGraphicsView>
-#include <QVBoxLayout>
+#include "designingview.h"
+
 #include <QMenu>
 #include <QMenuBar>
-#include <QToolBar>
-#include <QGraphicsScene>
+
+#include <QVBoxLayout>
+
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 	createAction();
 	createMenuBar();
-	createToolBar();	/// TODO: may be not need
 	createCentralWidget();
 }
 
@@ -52,10 +51,7 @@ void MainWindow::createFileMenu()
 void MainWindow::createBlockMenu()
 {
 	QMenu *blocksMenu = new QMenu(tr("Blocks"));
-	//blocksMenu->addAction(pAddDataBlock, this, SLOT(addItemData()));
-	//blocksMenu->addAction(pAddProcessBlock, this, SLOT(addItemProcess())););
 
-	//blocksMenu->addSeparator();//?????
 	blocksMenu->addAction(tr("Add data block"), this, SLOT(addItemData()));
 	blocksMenu->addAction(tr("Add process block"), this, SLOT(addItemProcess()));
 
@@ -73,44 +69,7 @@ void MainWindow::createCalculationMenu()
 	menuBar()->addMenu(calculationMenu);
 }
 
-void MainWindow::createToolBar()
-{
-	QToolBar *toolBar = new QToolBar(tr("File && Edit"));
-	addToolBar(Qt::TopToolBarArea, toolBar);
-	createFileTool(toolBar);
-	toolBar->addSeparator();
-	createEditTool(toolBar);
-}
-
-void MainWindow::createFileTool(QToolBar *toolBar)
-{
-
-}
-
-void MainWindow::createEditTool(QToolBar *toolBar)
-{
-
-}
-
 void MainWindow::createCentralWidget()
 {
-	pScene = new Scene;
-	pView = new QGraphicsView;
-	pView->setScene(pScene);
-	setCentralWidget(pView);
-
-}
-
-void MainWindow::addItemProcess()
-{
-	QGraphicsItem *item;
-	item = new itemProcess();
-	pScene->addItem(item);
-}
-
-void MainWindow::addItemData()
-{
-	QGraphicsItem *item;
-	item = new ItemData();
-	pScene->addItem(item);
+	setCentralWidget(new DesigningView);
 }

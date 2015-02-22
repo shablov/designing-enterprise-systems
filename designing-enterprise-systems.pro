@@ -20,12 +20,12 @@ SOURCES += main.cpp\
     item/itemdata.cpp \
     item/itemprocess.cpp \
     item/itemsource.cpp \
-    scene.cpp
+    designingview.cpp
 
 
 HEADERS  += mainwindow.h \
     item/itemdata.h \
     item/itemprocess.h \
     item/itemsource.h \
-    scene.h
+    designingview.h
 
