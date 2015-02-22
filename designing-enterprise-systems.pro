@@ -16,6 +16,16 @@ OBJECTS_DIR = obj
 RCC_DIR = obj
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    item/itemdata.cpp \
+    item/itemprocess.cpp \
+    item/itemsource.cpp \
+    scene.cpp
 
-HEADERS  += mainwindow.h
+
+HEADERS  += mainwindow.h \
+    item/itemdata.h \
+    item/itemprocess.h \
+    item/itemsource.h \
+    scene.h
+

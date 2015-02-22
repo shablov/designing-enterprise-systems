@@ -1,8 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include "scene.h"
 #include <QMainWindow>
-
+#include <QGraphicsView>
+#include <QHBoxLayout>
 class QAction;
 
 class MainWindow : public QMainWindow
@@ -27,9 +28,14 @@ private:
 
 	void createCentralWidget();
 
+	//void addItem(QGraphicsItem *item);
 private slots:
-
+	void addItemProcess();
+	void addItemData();
 private:
+	QGraphicsView *pView;
+	Scene   *pScene;
+
 	QAction *pOpenFile;
 	QAction *pSaveFile;
 	QAction *pSaveFileAs;

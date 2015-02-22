@@ -98,7 +98,6 @@ void MainWindow::createCentralWidget()
 	pView = new QGraphicsView;
 	pView->setScene(pScene);
 	setCentralWidget(pView);
-
 }
 
 void MainWindow::addItemProcess()
