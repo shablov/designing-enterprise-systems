@@ -26,6 +26,8 @@ void MainWindow::createAction()
 
 	pAddDataBlock = new QAction(tr("Add data block"), this);
 	pAddProcessBlock = new QAction(tr("Add process block"), this);
+
+	connect(pOpenFile, SIGNAL(triggered()), this, SLOT(onOpenFile()));
 }
 
 void MainWindow::createMenuBar()
@@ -52,8 +54,8 @@ void MainWindow::createBlockMenu()
 {
 	QMenu *blocksMenu = new QMenu(tr("Blocks"));
 
-	blocksMenu->addAction(tr("Add data block"), this, SLOT(addItemData()));
-	blocksMenu->addAction(tr("Add process block"), this, SLOT(addItemProcess()));
+	blocksMenu->addAction(tr("Add data block"), this, SLOT(addDataItem()));
+	blocksMenu->addAction(tr("Add process block"), this, SLOT(addProcessItem()));
 
 	menuBar()->addMenu(blocksMenu);
 }
@@ -72,4 +74,8 @@ void MainWindow::createCalculationMenu()
 void MainWindow::createCentralWidget()
 {
 	setCentralWidget(new DesigningView);
+}
+
+void MainWindow::onOpenFile()
+{
 }

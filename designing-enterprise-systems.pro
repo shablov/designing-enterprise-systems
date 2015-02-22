@@ -17,15 +17,11 @@ RCC_DIR = obj
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    item/itemdata.cpp \
-    item/itemprocess.cpp \
-    item/itemsource.cpp \
-    designingview.cpp
+    designingview.cpp \
+    item.cpp
 
 
 HEADERS  += mainwindow.h \
-    item/itemdata.h \
-    item/itemprocess.h \
-    item/itemsource.h \
-    designingview.h
+    designingview.h \
+    item.h
 
