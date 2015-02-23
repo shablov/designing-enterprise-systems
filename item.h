@@ -1,7 +1,7 @@
 #ifndef ITEMSOURCE_H
 #define ITEMSOURCE_H
 
-#include <QGraphicsItem>
+#include <QGraphicsRectItem>
 
 enum ItemType
 {
@@ -9,19 +9,18 @@ enum ItemType
 	processItem
 };
 
-class ItemSource : public QGraphicsItem
+class ItemSource : public QGraphicsRectItem
 {
 public:
 	ItemSource(ItemType type, QGraphicsItem *parent = 0);
 	~ItemSource();
 
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 protected:
 	virtual QRectF boundingRect() const;
 	float height, width;
 
 private:
-	ItemType pType;
+	ItemType type;
 };
 
 #endif // ITEMSOURCE_H
