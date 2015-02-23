@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include "designingview.h"
 #include <QMainWindow>
 
 class QAction;
@@ -14,6 +14,7 @@ public:
 
 public slots:
 	void onOpenFile();
+
 private:
 	void createAction();
 
@@ -24,8 +25,13 @@ private:
 	void createCalculationMenu();
 
 	void createCentralWidget();
-
+private slots:
+	void addDataItem();
+	void addProcessItem();
 private:
+	DesigningView *DView;
+
+
 	QAction *pOpenFile;
 	QAction *pSaveFile;
 	QAction *pSaveFileAs;

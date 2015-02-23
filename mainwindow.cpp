@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "designingview.h"
+//#include "designingview.h"
 
 #include <QMenu>
 #include <QMenuBar>
@@ -73,9 +73,20 @@ void MainWindow::createCalculationMenu()
 
 void MainWindow::createCentralWidget()
 {
-	setCentralWidget(new DesigningView);
+	DView = new DesigningView;
+	setCentralWidget(DView);
 }
 
 void MainWindow::onOpenFile()
 {
+}
+
+void MainWindow::addDataItem()
+{
+	DView->addItem(dataItem);
+}
+
+void MainWindow::addProcessItem()
+{
+	DView->addItem(processItem);
 }
