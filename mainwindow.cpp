@@ -1,18 +1,15 @@
 #include "mainwindow.h"
-#include "designingview.h"
-
 #include <QMenu>
 #include <QMenuBar>
-
 #include <QVBoxLayout>
-
 #include <QDebug>
-
+#include <QAction>
+#include "math.h"
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
 	setWindowTitle(tr("Designing enterprise systems"));
-
+	setGeometry(100,100,360,360);
 	createAction();
 	createMenuBar();
 	createCentralWidget();
@@ -54,8 +51,8 @@ void MainWindow::createBlockMenu()
 {
 	QMenu *blocksMenu = new QMenu(tr("Blocks"));
 
-	blocksMenu->addAction(tr("Add data block"), this, SLOT(addDataItem()));
-	blocksMenu->addAction(tr("Add process block"), this, SLOT(addProcessItem()));
+	blocksMenu->addAction(tr("Add data block"), this, SLOT(addDataBlock()));
+	blocksMenu->addAction(tr("Add process block"), this, SLOT(addProcessBlock()));
 
 	menuBar()->addMenu(blocksMenu);
 }
@@ -68,14 +65,32 @@ void MainWindow::createInitialMenu()
 void MainWindow::createCalculationMenu()
 {
 	QMenu *calculationMenu = new QMenu(tr("Calculation"));
+	calculationMenu->addAction(tr("calc"),this,SLOT(calc()));
 	menuBar()->addMenu(calculationMenu);
 }
 
 void MainWindow::createCentralWidget()
 {
-	setCentralWidget(new DesigningView);
+	DView = new DesigningView;
+	setCentralWidget(DView);
 }
 
 void MainWindow::onOpenFile()
 {
+}
+
+void MainWindow::addDataBlock()
+{
+	DView->addBlock(dataBlock);
+}
+
+void MainWindow::addProcessBlock()
+{
+	DView->addBlock(processBlock);
+}
+
+void MainWindow::calc()
+{
+	math m;
+	m.convertFromList(DView->getListData(),DView->getListProces());
 }

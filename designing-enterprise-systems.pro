@@ -18,10 +18,18 @@ RCC_DIR = obj
 SOURCES += main.cpp\
         mainwindow.cpp \
     designingview.cpp \
-    item.cpp
+    block.cpp \
+    graphicsview.cpp \
+    blockcontextmenu.cpp \
+    math.cpp
 
 
 HEADERS  += mainwindow.h \
     designingview.h \
-    item.h
+    block.h \
+    graphicsview.h \
+    blockcontextmenu.h \
+    math.h
+
+FORMS +=
 
