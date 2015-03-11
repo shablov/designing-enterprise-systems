@@ -16,8 +16,8 @@ DesigningView::DesigningView(QWidget *parent) : QWidget(parent)
 {
 	setAcceptDrops(true);
 	pGraphicsScene = new QGraphicsScene(this);
+	pGraphicsScene->setFocus(Qt::MouseFocusReason);
 	pGraphicsView = new GraphicsView(pGraphicsScene,this);
-	pGraphicsView->setScene(pGraphicsScene);
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addWidget(pGraphicsView);
@@ -34,26 +34,26 @@ DesigningView::~DesigningView()
 }
 void DesigningView::createAction()
 {
-	//pAddRelations = new QAction(tr("add relations"), this);
-	//pAddProcessBlock = new QAction(tr("Add process block"),this,SLOT(addProcessBlock()));
-	//pAddDataBlock = new QAction(tr("Add data block"),this,SLOT(addDataBlock()));
-	//pDeleteBlock = new QAction(tr("delete block"),this,SLOT(deleteBlock()));
-	//pSettings =  new QAction(tr("Settings"),this,SLOT(settingsBlock()),);
+	pAddRelation = new QAction(tr("add relations"), this);
+	pAddProcessBlock = new QAction(tr("Add process block"),this);
+	pAddDataBlock = new QAction(tr("Add data block"),this);
+	pDeleteBlock = new QAction(tr("delete block"),this);
+	pSettings =  new QAction(tr("Settings"),this);
+
+	connect(pAddRelation, SIGNAL(triggered()), this, SLOT(addRelation()));
+	connect(pAddProcessBlock, SIGNAL(triggered()), this, SLOT(addProcessBlock()));
+	connect(pAddDataBlock, SIGNAL(triggered()), this, SLOT(addDataBlock()));
+	connect(pDeleteBlock, SIGNAL(triggered()), this, SLOT(deleteBlock()));
+	connect(pSettings, SIGNAL(triggered()), this, SLOT(settingsBlock()));
 }
 void DesigningView::createContextMenu()
 {
 	pContextMenu = new QMenu(tr("Block"),pGraphicsView);
-	//pContextMenu->addAction(pAddRelations);
-	//pContextMenu->addAction(pAddProcessBlock);
-	//pContextMenu->addAction(pAddDataBlock);
-	//pContextMenu->addAction(pDeleteBlock);
-
-	pContextMenu->addAction(tr("add relations"), this,SLOT(addRelation()));
-	pContextMenu->addAction(tr("Add process block"),this,SLOT(addProcessBlock()));
-	pContextMenu->addAction(tr("Add data block"),this,SLOT(addDataBlock()));
-	pContextMenu->addAction(tr("delete block"),this,SLOT(deleteBlock()));
-	pContextMenu->addAction(tr("Settings"),this,SLOT(settingsBlock()));
-
+	pContextMenu->addAction(pAddRelation);
+	pContextMenu->addAction(pAddProcessBlock);
+	pContextMenu->addAction(pAddDataBlock);
+	pContextMenu->addAction(pDeleteBlock);
+	pContextMenu->addAction(pSettings);
 }
 QList<QGraphicsRectItem *> DesigningView::getListData() const
 {
@@ -76,20 +76,13 @@ void DesigningView::onCustomContextMenuRequested(const QPoint &point)
 	QPoint p = QPointF(pGraphicsView->mapFromGlobal(QWidget::mapToGlobal(point))).toPoint();
 
 	BlockItem *bi = refOnBlockItem(p);
+
+	pAddRelation->setVisible(bi);
+	pDeleteBlock->setVisible(bi);
+	pSettings->setVisible(bi);
+	pAddDataBlock->setVisible(!bi);
+	pAddProcessBlock->setVisible(!bi);
 	pContextMenu->exec(QWidget::mapToGlobal(point));
-
-
-
-
-	if (!bi)
-	{//TODO:vis or no to vis
-
-	}
-	else
-	{
-
-	}
-
 }
 
 

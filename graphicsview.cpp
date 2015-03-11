@@ -8,7 +8,9 @@
 GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
 	:QGraphicsView(scene,parent),pPaintLine(false)
 {
-	
+	setRenderHint(QPainter::Antialiasing);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 GraphicsView::~GraphicsView()
@@ -75,6 +77,14 @@ void GraphicsView::LineRePaint(QPoint point)
 		pLineItem->setLine(line);
 	}
 }
+
+void GraphicsView::resizeEvent(QResizeEvent *event)
+{
+	QGraphicsView::resizeEvent(event);
+	scene()->setSceneRect(rect());
+}
+
+
 
 void GraphicsView::endLinePaint(QPoint point)
 {

@@ -11,6 +11,9 @@ public:
 	~math();
 	virtual void convertFromList(QList<QGraphicsRectItem* > pListData,QList<QGraphicsRectItem* > pListProces);
 	void calc(QList<BlockItem *> listData, QList<BlockItem *> listProces, const int aX, const int aY);
+private:
+	const int x;
+	const int y;
 };
 
 #endif // MATH_H

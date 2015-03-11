@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     block.cpp \
     graphicsview.cpp \
     blockcontextmenu.cpp \
-    math.cpp
+    math.cpp \
+    matrix.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     block.h \
     graphicsview.h \
     blockcontextmenu.h \
-    math.h
+    math.h \
+    matrix.h
 
 FORMS +=
 

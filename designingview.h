@@ -45,7 +45,7 @@ private:
 
 	QPoint pLastKeyPoint;
 
-	QAction *pAddRelations;
+	QAction *pAddRelation;
 	QAction *pAddDataBlock ;
 	QAction *pAddProcessBlock;
 	QAction *pDeleteBlock;

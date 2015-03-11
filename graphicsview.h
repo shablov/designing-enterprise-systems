@@ -33,6 +33,10 @@ private:
 	bool pPaintLine;
 
 
+
+	// QWidget interface
+protected:
+	void resizeEvent(QResizeEvent *event);
 };
 
 #endif // GRAPHICSSCENE_H
