@@ -25,8 +25,8 @@ public:
 	BlockItem* refOnBlockItem(QPoint point);
 
 
-	QList<QGraphicsRectItem *> getListProces() const;
-	QList<QGraphicsRectItem *> getListData() const;
+	QList<BlockItem *> getListProces() const;
+	QList<BlockItem *> getListData() const;
 
 
 private slots:
@@ -40,6 +40,7 @@ private slots:
 
 
 private:
+	void startFunc(); //del
 	void createAction();
 	void createContextMenu();
 
@@ -56,8 +57,8 @@ private:
 	GraphicsView *pGraphicsView;
 	QGraphicsScene *pGraphicsScene;
 
-	QList<QGraphicsRectItem *> pListData;
-	QList<QGraphicsRectItem *> pListProces;
+	QList<BlockItem *> pListData;
+	QList<BlockItem *> pListProces;
 
 	BlockContextMenu* bcm;
 

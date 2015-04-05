@@ -1,6 +1,7 @@
 #ifndef MATH_H
 #define MATH_H
 #include "block.h"
+#include "matrix.h"
 #include <QList>
 #include <QGenericMatrix>
 
@@ -9,11 +10,10 @@ class math
 public:
 	math();
 	~math();
-	virtual void convertFromList(QList<QGraphicsRectItem* > pListData,QList<QGraphicsRectItem* > pListProces);
+	matrix convertFromList(QList<BlockItem *> pListData,QList<BlockItem *> pListProces);
 	void calc(QList<BlockItem *> listData, QList<BlockItem *> listProces, const int aX, const int aY);
 private:
-	const int x;
-	const int y;
+
 };
 
 #endif // MATH_H

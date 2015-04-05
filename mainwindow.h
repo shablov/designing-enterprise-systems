@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include "designingview.h"
 #include <QMainWindow>
+#include "frequencywindow.h"
 
 class QAction;
 
@@ -26,11 +27,13 @@ private:
 	void createCalculationMenu();
 
 	void createCentralWidget();
+
 private slots:
 	void addDataBlock();
 	void addProcessBlock();
-
+	void AddFrequency();
 	void calc();
+	void viewF();
 private:
 	DesigningView *DView;
 
@@ -39,6 +42,9 @@ private:
 	QAction *pSaveFileAs;
 	QAction *pAddDataBlock;
 	QAction *pAddProcessBlock;
+	QAction *pAddFrequency;
+	QAction *pViewF;
+
 };
 
 #endif // MAINWINDOW_H

@@ -5,11 +5,14 @@
 #include <QDebug>
 #include <QAction>
 #include "math.h"
+//#include "math.h"
+#include "designingviewf.h"
+#include "frequencywindow.h"
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
 	setWindowTitle(tr("Designing enterprise systems"));
-	setGeometry(100,100,360,360);
+	setGeometry(100,100,720,720);
 	createAction();
 	createMenuBar();
 	createCentralWidget();
@@ -23,8 +26,9 @@ void MainWindow::createAction()
 
 	pAddDataBlock = new QAction(tr("Add data block"), this);
 	pAddProcessBlock = new QAction(tr("Add process block"), this);
-
+	pViewF = new QAction(tr("view"), this);
 	connect(pOpenFile, SIGNAL(triggered()), this, SLOT(onOpenFile()));
+	connect(pViewF,SIGNAL(triggered()),this,SLOT(viewF()));
 }
 
 void MainWindow::createMenuBar()
@@ -66,6 +70,8 @@ void MainWindow::createCalculationMenu()
 {
 	QMenu *calculationMenu = new QMenu(tr("Calculation"));
 	calculationMenu->addAction(tr("calc"),this,SLOT(calc()));
+	calculationMenu->addAction(tr("Frequency"),this,SLOT(AddFrequency()));
+	calculationMenu->addAction(pViewF);
 	menuBar()->addMenu(calculationMenu);
 }
 
@@ -89,8 +95,23 @@ void MainWindow::addProcessBlock()
 	DView->addBlock(processBlock);
 }
 
+void MainWindow::AddFrequency()
+{
+	FrequencyWindow * fw = new FrequencyWindow(DView->getListProces());
+	//ToDo: fw->exec
+	fw->show();//??
+}
+
 void MainWindow::calc()
 {
 	math m;
 	m.convertFromList(DView->getListData(),DView->getListProces());
+}
+
+void MainWindow::viewF()
+{
+	math m;
+	DesigningViewF* d = new DesigningViewF(m.convertFromList(DView->getListData(),DView->getListProces()));
+	d->setGeometry(100,100,720,720);
+	d->show();
 }

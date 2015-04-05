@@ -17,7 +17,6 @@ signals:
 public slots:
 	void reNameBlock();
 private:
-
 	QLineEdit *leName;
 	QSpinBox *sbFrequency;
 	BlockItem *pBlockItem;

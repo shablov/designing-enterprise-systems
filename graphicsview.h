@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QGraphicsView>
+#include "block.h"
 class GraphicsView : public QGraphicsView
 {
 	Q_OBJECT
@@ -12,6 +13,7 @@ public:
 
 	void startLinePaint(QPoint point);
 	void endLinePaint(QPoint point);
+	void addLinePaint(QGraphicsRectItem *startBI, QGraphicsRectItem *endBI);
 signals:
 
 
@@ -22,17 +24,11 @@ protected:
 	virtual void mouseMoveEvent(QMouseEvent*event);
 	virtual void mouseDoubleClickEvent(QMouseEvent*event);
 
-
 private:
-
 	void LineRePaint(QPoint point);
 
-
 	QGraphicsLineItem *pLineItem;
-//	QLineF pLineF;
 	bool pPaintLine;
-
-
 
 	// QWidget interface
 protected:

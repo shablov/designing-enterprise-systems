@@ -11,7 +11,6 @@
 #include "blockcontextmenu.h"
 
 
-
 DesigningView::DesigningView(QWidget *parent) : QWidget(parent)
 {
 	setAcceptDrops(true);
@@ -26,6 +25,8 @@ DesigningView::DesigningView(QWidget *parent) : QWidget(parent)
 	connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
 	createAction();
 	createContextMenu();
+
+	startFunc();
 }
 
 DesigningView::~DesigningView()
@@ -55,18 +56,16 @@ void DesigningView::createContextMenu()
 	pContextMenu->addAction(pDeleteBlock);
 	pContextMenu->addAction(pSettings);
 }
-QList<QGraphicsRectItem *> DesigningView::getListData() const
+QList<BlockItem *> DesigningView::getListData() const
 {
 	return pListData;
 }
 
 
-QList<QGraphicsRectItem *> DesigningView::getListProces() const
+QList<BlockItem *> DesigningView::getListProces() const
 {
 	return pListProces;
 }
-
-
 
 
 void DesigningView::onCustomContextMenuRequested(const QPoint &point)
@@ -88,7 +87,7 @@ void DesigningView::onCustomContextMenuRequested(const QPoint &point)
 
 void DesigningView::addBlock(BlockType type, QPoint point)
 {
-	QGraphicsRectItem *item;
+	BlockItem *item;
 
 	QString name;
 	switch (type)
@@ -125,12 +124,9 @@ BlockItem *DesigningView::refOnBlockItem(QPoint point)
 		if (ti) bi = qgraphicsitem_cast<BlockItem *>(ti->parentItem());
 	}
 
-	//	if (!bi)// and  !pGraphicsView->itemAt(point)->parentItem())
-	//		bi = qgraphicsitem_cast<BlockItem *>(pGraphicsView->itemAt(point)->parentItem());
-
-	//qDebug()<<"123" <<pGraphicsView->itemAt(point)->type();
 	return bi;
 }
+
 
 void DesigningView::addDataBlock()
 {
@@ -168,7 +164,30 @@ void DesigningView::settingsBlock()
 	BlockItem *bi = refOnBlockItem(p);
 	if(bi)
 	{
-		bcm= new BlockContextMenu(bi);
+		bcm = new BlockContextMenu(bi);
 		bcm->show();
 	}
+}
+
+void DesigningView::startFunc()
+{
+	addBlock(processBlock,QPoint(360,100));
+	addBlock(processBlock,QPoint(360,300));
+	addBlock(processBlock,QPoint(360,500));
+	pListProces.at(0)->setFrequencyOfActivation(1);
+	pListProces.at(1)->setFrequencyOfActivation(2);
+	pListProces.at(2)->setFrequencyOfActivation(5);
+
+	addBlock(dataBlock,QPoint(160,200));
+	addBlock(dataBlock,QPoint(160,400));
+	addBlock(dataBlock,QPoint(560,200));
+	addBlock(dataBlock,QPoint(560,400));
+
+	pGraphicsView->addLinePaint(pListData.at(0),pListProces.at(0));
+	pGraphicsView->addLinePaint(pListData.at(0),pListProces.at(1));
+	pGraphicsView->addLinePaint(pListData.at(1),pListProces.at(2));
+	pGraphicsView->addLinePaint(pListData.at(2),pListProces.at(0));
+	pGraphicsView->addLinePaint(pListData.at(2),pListProces.at(1));
+	pGraphicsView->addLinePaint(pListData.at(3),pListProces.at(1));
+	pGraphicsView->addLinePaint(pListData.at(3),pListProces.at(2));
 }

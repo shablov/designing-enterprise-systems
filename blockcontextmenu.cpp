@@ -9,12 +9,12 @@
 #include <QSpinBox>
 BlockContextMenu::BlockContextMenu(BlockItem* blockItem,QWidget *parent) : QWidget(parent),pBlockItem(blockItem)
 {
-
 	QPushButton *bOk= new QPushButton(tr("Ok"),this);
 	QPushButton *bCansel = new QPushButton(tr("Cansel"),this);
 	leName = new QLineEdit(blockItem->getName(),this);
 	sbFrequency = new QSpinBox(this);
 	sbFrequency->setValue(blockItem->getFrequencyOfActivation());
+	sbFrequency->setMinimum(1);
 	QGridLayout *layout = new QGridLayout;
 	QList<QLabel*> listLabel;
 
@@ -48,7 +48,6 @@ void BlockContextMenu::reNameBlock()
 	pBlockItem->setFrequencyOfActivation(sbFrequency->value());
 	this->close();
 }
-
 BlockContextMenu::~BlockContextMenu()
 {
 

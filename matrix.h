@@ -7,7 +7,7 @@ class matrix
 
 public:
 	matrix(int row=1, int col=1,float data = 0); // конструктор
-
+	~matrix();
 	void display();
 	void fill(float data);
 
@@ -15,10 +15,12 @@ public:
 	float getData(int row, int col);
 	int getRows() const;
 	int getCols() const;
-	matrix transposition();
+//	void transposition();
+	void RelativeFrequency();
+	static matrix RelativeFrequency(matrix m);
 
-
-
+	static matrix transposition(matrix m);
+	static matrix multiBitwise(matrix m1,matrix m2);
 	static matrix multi(matrix m1,matrix m2);
 
 

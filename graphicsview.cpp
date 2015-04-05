@@ -84,8 +84,6 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
 	scene()->setSceneRect(rect());
 }
 
-
-
 void GraphicsView::endLinePaint(QPoint point)
 {
 	pPaintLine = false;
@@ -107,7 +105,26 @@ void GraphicsView::endLinePaint(QPoint point)
 		bi2->addReference(bi1);
 	}
 	scene()->removeItem(pLineItem);
+}
 
+
+
+void GraphicsView::addLinePaint(QGraphicsRectItem *startBI, QGraphicsRectItem *endBI)
+{
+	BlockItem *bi1 = qgraphicsitem_cast<BlockItem *>(startBI);
+	BlockItem *bi2 = qgraphicsitem_cast<BlockItem *>(endBI);
+
+
+	if (bi1 && bi2 and bi1 != bi2 and bi1->getType() != bi2->getType() and !bi1->isReference(bi2))
+	{
+		QLineF line(bi1->pos(),bi2->pos());
+		QGraphicsLineItem *lineItem = scene()->addLine(line);
+		bi1->addLineItem(lineItem);
+		bi2->addLineItem(lineItem);
+
+		bi1->addReference(bi2);
+		bi2->addReference(bi1);
+	}
 }
 
 

@@ -41,7 +41,7 @@ protected:
 	QGraphicsTextItem *textFrequency;
 private:
 	void rePaintLine();
-
+	bool allocated;//toDo выделение объектов
 	BlockType pType;
 	QList<QGraphicsLineItem*> pLineList;
 	QList<BlockItem*> pReference;

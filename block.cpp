@@ -4,7 +4,8 @@
 #include <QDebug>
 #include <QPainter>
 BlockItem::BlockItem(BlockType type, QString name ,QGraphicsItem *parent)
-	:  height(100), width(100),QGraphicsRectItem(parent),pType(type),frequencyOfActivation(0)
+	:  height(100), width(100),QGraphicsRectItem(parent),pType(type),
+	  frequencyOfActivation(1),allocated(false)
 {
 	setZValue(5);
 	setRect(-height/2,-width/2,height,width);
@@ -22,9 +23,6 @@ BlockItem::BlockItem(BlockType type, QString name ,QGraphicsItem *parent)
 	textFrequency->setPos(-width / 2, -height / 2 + 15);
 	textFrequency->setPlainText(QString("Частота:%1").arg(frequencyOfActivation));
 	textFrequency->setZValue(4);
-
-
-
 
 	switch (type)
 

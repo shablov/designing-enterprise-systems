@@ -11,6 +11,11 @@ matrix::matrix(int row, int col, float data)
 	return;
 }
 
+matrix::~matrix()
+{
+	//qDeleteAll(intdata);
+}
+
 float matrix::getData(int row, int col)
 {
 	if (row < 0 || row > rows)
@@ -24,7 +29,7 @@ void matrix::createMatrix()
 {
 	if (rows<1) rows = 1;
 	if (cols<1) cols = 1;
-
+	delete(intdata);
 	intdata=new float* [this->rows];
 	for(int i=0; i<rows;i++)
 		intdata[i]=new float [this->cols];
@@ -40,13 +45,64 @@ int matrix::getCols() const
 	return cols;
 }
 
-matrix matrix::transposition()
+//void matrix::transposition()
+//{
+//	matrix m(cols,rows);
+//	for (int j=0;j<rows;j++)
+//		for (int i=0;i<cols;i++)
+//			m.setData(i,j,getData(j,i));
+
+//	cols = m.getCols();
+//	rows = m.getCols();
+//	createMatrix();
+//	for (int j=0;j<rows;j++)
+//		for (int i=0;i<cols;i++)
+//			setData(i,j,m.getData(i,j));
+//}
+
+void matrix::RelativeFrequency()
 {
-	matrix m(cols,rows);
 	for (int j=0;j<rows;j++)
+	{
+	int buff = intdata[j][j];
 		for (int i=0;i<cols;i++)
-			m.setData(i,j,getData(j,i));
-	return m;
+		{
+			qDebug()<<intdata[j][i]<<" "<<buff;
+			intdata[j][i] = intdata[j][i]/buff;
+		}
+	}
+}
+
+matrix matrix::RelativeFrequency(matrix m)
+{
+	matrix result = m;
+	result.RelativeFrequency();
+	return result;
+}
+
+matrix matrix::transposition(matrix m)
+{
+	matrix result(m.getCols(),m.getRows());// m.getCols(),m.getRows());
+	for (int j=0;j<result.getRows();j++)
+		for (int i=0;i<result.getCols();i++)
+			result.setData(j,i,m.getData(i,j));
+	return result;
+}
+
+matrix matrix::multiBitwise(matrix m1, matrix m2)
+{
+	if (m1.getCols() != m2.getCols())
+		return matrix(1,1);
+	matrix result(m1.getRows(),m1.getCols());
+	qDebug()<<"-----------";
+	for (int j=0;j<m1.getRows();j++)
+		for (int i=0;i<m1.getCols();i++)
+		{
+			result.setData(j,i,m1.getData(j,i)*m2.getData(0,i));
+			qDebug()<<result.getData(j,i);
+		}
+	qDebug()<<"-----------";
+	return result;
 }
 
 matrix matrix::multi(matrix m1, matrix m2)
