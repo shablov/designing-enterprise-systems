@@ -21,12 +21,12 @@ SOURCES += main.cpp\
     block.cpp \
     graphicsview.cpp \
     blockcontextmenu.cpp \
-    math.cpp \
     matrix.cpp \
     frequencywindow.cpp \
     designingviewf.cpp \
-    blockf.cpp \
-    blockcircle.cpp
+    edge.cpp \
+    node.cpp \
+    mathem.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -34,12 +34,12 @@ HEADERS  += mainwindow.h \
     block.h \
     graphicsview.h \
     blockcontextmenu.h \
-    math.h \
     matrix.h \
     frequencywindow.h \
     designingviewf.h \
-    blockf.h \
-    blockcircle.h
+    edge.h \
+    node.h \
+    mathem.h
 
 FORMS +=
 

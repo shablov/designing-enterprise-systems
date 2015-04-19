@@ -2,12 +2,12 @@
 #define MATRIX_H
 
 
-class matrix
+class MyMatrix
 {
 
 public:
-	matrix(int row=1, int col=1,float data = 0); // конструктор
-	~matrix();
+	MyMatrix(int row=1, int col=1,float data = 0); // конструктор
+	~MyMatrix();
 	void display();
 	void fill(float data);
 
@@ -17,11 +17,11 @@ public:
 	int getCols() const;
 //	void transposition();
 	void RelativeFrequency();
-	static matrix RelativeFrequency(matrix m);
+	static MyMatrix RelativeFrequency(MyMatrix m);
 
-	static matrix transposition(matrix m);
-	static matrix multiBitwise(matrix m1,matrix m2);
-	static matrix multi(matrix m1,matrix m2);
+	static MyMatrix transposition(MyMatrix m);
+	static MyMatrix multiBitwise(MyMatrix m1,MyMatrix m2);
+	static MyMatrix multi(MyMatrix m1,MyMatrix m2);
 
 
 	float &operator()(int row, int col);

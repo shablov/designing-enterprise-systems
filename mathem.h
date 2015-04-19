@@ -10,7 +10,7 @@ class math
 public:
 	math();
 	~math();
-	matrix convertFromList(QList<BlockItem *> pListData,QList<BlockItem *> pListProces);
+	MyMatrix convertFromList(QList<BlockItem *> pListData,QList<BlockItem *> pListProces);
 	void calc(QList<BlockItem *> listData, QList<BlockItem *> listProces, const int aX, const int aY);
 private:
 

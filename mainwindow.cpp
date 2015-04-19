@@ -4,8 +4,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QAction>
-#include "math.h"
-//#include "math.h"
+#include "mathem.h"
 #include "designingviewf.h"
 #include "frequencywindow.h"
 MainWindow::MainWindow(QWidget *parent)
@@ -111,7 +110,8 @@ void MainWindow::calc()
 void MainWindow::viewF()
 {
 	math m;
-	DesigningViewF* d = new DesigningViewF(m.convertFromList(DView->getListData(),DView->getListProces()));
-	d->setGeometry(100,100,720,720);
+	DesigningViewF* d = new DesigningViewF(m.convertFromList(DView->getListData(),DView->getListProces()),
+										   DView->getListData());
+	d->setAttribute(Qt::WA_DeleteOnClose);
 	d->show();
 }

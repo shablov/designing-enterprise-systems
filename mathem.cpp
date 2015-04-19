@@ -1,4 +1,4 @@
-#include "math.h"
+#include "mathem.h"
 #include <QDebug>
 #include "matrix.h"
 
@@ -18,15 +18,15 @@ math::~math()
 
 }
 
-matrix math::convertFromList(QList<BlockItem *> listData, QList<BlockItem *> listProces)
+MyMatrix math::convertFromList(QList<BlockItem *> listData, QList<BlockItem *> listProces)
 {
 	qDebug()<<"!!!";
 	//MatB
 	//QList<BlockItem*> listData,listProces;
 
 
-	matrix matB(listData.count(),listProces.count()) ; //= new QGenericMatrix<listData.count(),listProces.count(),int>;
-	matrix matFp(1,listProces.count());
+	MyMatrix matB(listData.count(),listProces.count()) ; //= new QGenericMatrix<listData.count(),listProces.count(),int>;
+	MyMatrix matFp(1,listProces.count());
 
 	//listProces.
 
@@ -41,19 +41,19 @@ matrix math::convertFromList(QList<BlockItem *> listData, QList<BlockItem *> lis
 	matFp.display();
 
 
-	matrix matBuff = matrix::multiBitwise(matB,matFp);
+	MyMatrix matBuff = MyMatrix::multiBitwise(matB,matFp);
 	qDebug()<<"Buff";
 	matBuff.display();
 
-	matrix matBuff2 = matrix::transposition(matB);
+	MyMatrix matBuff2 = MyMatrix::transposition(matB);
 
 	qDebug()<<"Buff2";
 	matBuff2.display();
 
-	matrix matAf = matrix::multi(matBuff,matBuff2);
+	MyMatrix matAf = MyMatrix::multi(matBuff,matBuff2);
 	qDebug()<<"Af";
 	matAf.display();
-	matrix matS = matrix::RelativeFrequency(matAf);
+	MyMatrix matS = MyMatrix::RelativeFrequency(matAf);
 	qDebug()<<"S";
 	matS.display();
 	return matS;
