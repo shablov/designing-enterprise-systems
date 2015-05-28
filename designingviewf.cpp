@@ -16,7 +16,7 @@
 #include "edge.h"
 #include <math.h>
 
-DesigningViewF::DesigningViewF(MyMatrix mat, QList<BlockItem *> blockItems, QStringList list, QWidget *parent)
+DesigningViewF::DesigningViewF(const MyMatrix &mat, const QList<BlockItem *> &blockItems, const QStringList &list, QWidget *parent)
 //DesigningViewF::DesigningViewF(MyMatrix mat, QList<BlockItem *> blockItems, QWidget *parent)
 	: QWidget(parent), pListBlockItem(blockItems), timerId(0), count(0),type(noneBlock),pstringList(list)
 {

@@ -18,7 +18,7 @@ public slots:
 
 
 public:
-	DesigningViewF(MyMatrix mat, QList<BlockItem*> blockItems,QStringList list,QWidget *parent = 0);
+    DesigningViewF(const MyMatrix &mat, const QList<BlockItem*> &blockItems, const QStringList &list,QWidget *parent = 0);
 	//DesigningViewF(MyMatrix mat, QStringList stringlist,BlockType Type,QWidget *parent = 0);
 	~DesigningViewF();
 

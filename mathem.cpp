@@ -244,6 +244,7 @@ QStringList math::newTreeList()
 	{
 		list.append(listTree.at(i)->MyName);
 	}
+    return list;
 }
 
 

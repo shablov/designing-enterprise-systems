@@ -176,8 +176,10 @@ void MainWindow::viewData()
 	w->savePublic(false);
 
 	math m;
-	DesigningViewF* d = new DesigningViewF(m.convertFromList(DView->getListData(),DView->getListProces(),DView->getTreeData()),
-											DView->getListData(),m.newTreeList());
+    MyMatrix mat = m.convertFromList(DView->getListData(),DView->getListProces(),DView->getTreeData());
+    QList<BlockItem *> listData = DView->getListData();
+    QStringList treeList = m.newTreeList();
+    DesigningViewF* d = new DesigningViewF(mat, listData, treeList);
 	d->setAttribute(Qt::WA_DeleteOnClose);
 	d->show();
 }
@@ -189,8 +191,10 @@ void MainWindow::viewProcess()
 
 
 	math m;
-	DesigningViewF* d = new DesigningViewF(m.convertFromList(DView->getListProces(),DView->getListData(),DView->getTreeProcess()),
-												DView->getListProces(),m.newTreeList());
+    MyMatrix mat = m.convertFromList(DView->getListProces(),DView->getListData(), DView->getTreeProcess());
+    QList<BlockItem *> listData = DView->getListProces();
+    QStringList treeList = m.newTreeList();
+    DesigningViewF* d = new DesigningViewF(mat, listData, treeList);
 
 	d->setAttribute(Qt::WA_DeleteOnClose);
 	d->show();
