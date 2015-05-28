@@ -1,7 +1,7 @@
 #include "designingviewf.h"
 
-#include "blockf.h"
-#include "blockcircle.h"
+//#include "blockf.h"
+//#include "blockcircle.h"
 #include "graphicsview.h"
 
 #include <QGraphicsView>
@@ -16,25 +16,48 @@
 #include "edge.h"
 #include <math.h>
 
-DesigningViewF::DesigningViewF(MyMatrix mat, QList<BlockItem *> blockItems, QWidget *parent)
-	: QWidget(parent), pListBlockItem(blockItems), timerId(0)
+DesigningViewF::DesigningViewF(MyMatrix mat, QList<BlockItem *> blockItems, QStringList list, QWidget *parent)
+//DesigningViewF::DesigningViewF(MyMatrix mat, QList<BlockItem *> blockItems, QWidget *parent)
+	: QWidget(parent), pListBlockItem(blockItems), timerId(0), count(0),type(noneBlock),pstringList(list)
 {
 	setAcceptDrops(true);
 	pScene = new QGraphicsScene;
 	pScene->setItemIndexMethod(QGraphicsScene::NoIndex);
-	pScene->setSceneRect(0,0,720, 720);
 
-	pView = new QGraphicsView(this);
-	pView->setScene(pScene);
+	pView = new QGraphicsView(pScene, this);
 	pView->setCacheMode(QGraphicsView::CacheBackground);
 	pView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 	pView->setRenderHint(QPainter::Antialiasing);
 	pView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 	pView->scale(qreal(0.8), qreal(0.8));
+	pView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	setMinimumSize(720, 720);
 	visibleGraph(mat);
 	shuffle();
 }
+
+//{
+
+//}
+
+//DesigningViewF::DesigningViewF(MyMatrix mat, QStringList stringlist, BlockType Type, QWidget *parent)
+//: QWidget(parent), pstringList(stringlist), timerId(0), count(0),type(Type)
+//{
+//	setAcceptDrops(true);
+//	pScene = new QGraphicsScene;
+//	pScene->setItemIndexMethod(QGraphicsScene::NoIndex);
+
+//	pView = new QGraphicsView(pScene, this);
+//	pView->setCacheMode(QGraphicsView::CacheBackground);
+//	pView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+//	pView->setRenderHint(QPainter::Antialiasing);
+//	pView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+//	pView->scale(qreal(0.8), qreal(0.8));
+//	pView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//	setMinimumSize(720, 720);
+//	visibleGraph(mat);
+//	shuffle();
+//}
 DesigningViewF::~DesigningViewF()
 {
 
@@ -43,12 +66,28 @@ DesigningViewF::~DesigningViewF()
 void DesigningViewF::visibleGraph(MyMatrix mat)
 {
 	QList<Node*> nodes;
-	for (int i = 0; i < pListBlockItem.count(); i++)
-	{
-		Node *node = new Node(this, pListBlockItem.at(i)->getName());
-		nodes << node;
-		scene()->addItem(node);
-	}
+
+//	if(type== noneBlock)
+//	{
+//		for (int i = 0; i < pListBlockItem.count(); i++)
+//		{
+//			QString name = "(%1)" + pListBlockItem.at(i)->getName();
+//			name = name.arg(mat.getData(i,i));
+//			Node *node = new Node(this,name,pListBlockItem.at(i)->getType());
+//			nodes << node;
+//			scene()->addItem(node);
+//		}
+//	}else
+//	{
+		for (int i = 0; i < pstringList.count(); i++)
+		{
+			QString name = "(%1)" + pstringList.at(i);
+			name = name.arg(mat.getData(i,i));
+			Node *node = new Node(this,name,type);
+			nodes << node;
+			scene()->addItem(node);
+		}
+//	}
 
 	for (int i = 0; i < mat.getRows(); i++)
 	{
@@ -97,8 +136,7 @@ void DesigningViewF::timerEvent(QTimerEvent *event)
 {
 	Q_UNUSED(event);
 
-	static int count = 0;
-	if (count++ > 1000)
+	if (count++ > 200)
 	{
 		killTimer(timerId);
 		timerId = 0;
@@ -163,4 +201,10 @@ void DesigningViewF::zoomIn()
 void DesigningViewF::zoomOut()
 {
 	scaleView(1 / qreal(1.2));
+}
+
+void DesigningViewF::resizeEvent(QResizeEvent *event)
+{
+	pView->setSceneRect(rect());
+	pView->resize(event->size());
 }

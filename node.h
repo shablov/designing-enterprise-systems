@@ -43,7 +43,8 @@
 
 #include <QGraphicsItem>
 #include <QList>
-
+#include <QBrush>
+#include "block.h"
 class Edge;
 class DesigningViewF;
 QT_BEGIN_NAMESPACE
@@ -54,7 +55,7 @@ QT_END_NAMESPACE
 class Node : public QGraphicsItem
 {
 public:
-	Node(DesigningViewF *graphWidget, QString text = QString());
+	Node(DesigningViewF *graphWidget, QString text ,BlockType pType);
 
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;
@@ -78,6 +79,7 @@ private:
     QList<Edge *> edgeList;
     QPointF newPos;
 	DesigningViewF *graph;
+	QBrush pBrush;
 };
 //! [0]
 

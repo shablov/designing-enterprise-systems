@@ -89,36 +89,43 @@ void Edge::adjust()
 
 	if (length > qreal(20.)) {
 
-//		int sector = (line.p1().x() > line.p2().x() )
-//				? ((line.p1().y() > line.p2().y()) ? 2 : 3)
-//				: ((line.p1().y() > line.p2().y()) ? 1 : 4);
-
-//		qreal angleRect = atan(100/100)*180/Pi;//  h/w
-//		angleRect = angleRect > 180? angleRect: angleRect -180;
-//		QLineF line1(line);
-
-//		if (( line.angle() < line.angle()) ||
-//				( line.angle() > 180 - angleRect && line.angle() >180 + angleRect) ||
-//				( line.angle() > 360 - line.angle()))
-
-//			if (line.angle()!= 90 && line.angle()!= 270)
-//				line1.setLength(fabs(50./cos(line.angle()*Pi/180)));
-//			else line1.setLength(50);
-//		else
-//			if (line.angle()!= 0 && line.angle()!= 180)
-//				line1.setLength(fabs(50./sin(line.angle()*Pi/180)));
-//			else line1.setLength(50);
-
-//		qDebug()<<"----";
-//		qDebug()<<line1.length();
-//		float f = line1.length();
-//		line1.setLength(50. / line.dx() * line.length());
-//		line1.setLength(f);
-//		qDebug()<<line.length();
+		//		int sector = (line.p1().x() > line.p2().x() )
+		//				? ((line.p1().y() > line.p2().y()) ? 2 : 3)
+		//				: ((line.p1().y() > line.p2().y()) ? 1 : 4);
 
 
-		QPointF edgeOffset((line.dx() * 50 * 1.4) / length,
-						   (line.dy() *  50 * 1.4) / length);
+		qreal angleRect = atan(100/100)*180/Pi;//  h/w
+		//angleRect = angleRect > 180? angleRect: angleRect -180;
+
+		QLineF line1(line);
+
+
+		if (( line.angle() <= angleRect) ||
+				( line.angle() >= 180 - angleRect && line.angle() <= 180 + angleRect) ||
+				( line.angle() >= 360 - angleRect))
+
+			//if (line.angle()!= 90 && line.angle()!= 270)
+			line1.setLength(50./cos(line.angle()*Pi/180));
+		//	else line1.setLength(50);
+		else
+			//if (line.angle()!= 0 && line.angle()!= 180)
+			line1.setLength(50./sin(line.angle()*Pi/180));
+		//else line1.setLength(50);
+
+		//		qDebug()<<"----";
+		//		qDebug()<<line1.length();
+		//		float f = line1.length();
+		//		line1.setLength(50. / line.dx() * line.length());
+		//		line1.setLength(f);
+		//		qDebug()<<line.length();
+
+
+		//qDebug()<<"------------";
+		//qDebug()<<line1.length()<<" "<< 50*1.4 <<" "<<line.dx()<<" "<<line.dy();
+
+
+		QPointF edgeOffset((line.dx() *line1.length()) / length,
+						   (line.dy() *line1.length()) / length);
 		sourcePoint = line.p1() + edgeOffset;
 		destPoint = line.p2() - edgeOffset;
 	} else {
@@ -176,12 +183,17 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 
 	painter->setBrush(Qt::NoBrush);
 	QLineF line1(line);
-	line1.setLength(line1.length() - 30);
-	QRectF rect(line1.p2(),QSizeF(50,28));
-	painter->drawEllipse(rect);
+	line1.setLength(line1.length() - 35);
+	QRectF rect(line1.p2().rx() - 25,line1.p2().ry() - 25,50,50);
+
+
 	QFont font = painter->font();
 	font.setPointSize(font.pointSize() * 2);
 	painter->setFont(font);
-	painter->drawText(rect.adjusted(5,0,0,0), QString::number(mFrequency).left(4));
+
+	painter->setBrush(Qt::white);
+	painter->drawEllipse(rect);
+
+	painter->drawText(rect.adjusted(5,12,0,0), QString::number(mFrequency).left(4));
 }
 //! [6]

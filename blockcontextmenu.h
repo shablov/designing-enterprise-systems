@@ -4,7 +4,9 @@
 #include <QWidget>
 #include "block.h"
 #include <QLineEdit>
-#include <QSpinBox>
+#include <QPushButton>
+#include <QDoubleSpinBox>
+#include <QList>
 class BlockContextMenu : public QWidget
 {
 	Q_OBJECT
@@ -16,10 +18,13 @@ signals:
 
 public slots:
 	void reNameBlock();
+	void addToRemove();
 private:
 	QLineEdit *leName;
-	QSpinBox *sbFrequency;
+	QDoubleSpinBox *sbFrequency;
 	BlockItem *pBlockItem;
+	QList<BlockItem*> lToRemove;
+	QList<QPushButton*> lPushButton;
 };
 
 #endif // BLOCKCONTEXTMENU_H

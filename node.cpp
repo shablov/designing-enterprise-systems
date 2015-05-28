@@ -41,16 +41,27 @@
 #include "edge.h"
 #include "node.h"
 #include "designingviewf.h"
-
+#include "block.h"
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOption>
 
 //! [0]
-Node::Node(DesigningViewF *graphWidget, QString text)
+Node::Node(DesigningViewF *graphWidget, QString text,BlockType pType)
 	: graph(graphWidget)
 {
+	switch (pType)
+
+	{
+	case processBlock:
+		pBrush = Qt::yellow;
+		break;
+	case dataBlock:
+		pBrush = Qt::green;
+		break;
+	}
+
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
@@ -154,7 +165,7 @@ QRectF Node::boundingRect() const
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	painter->setPen(QPen(Qt::black, 0));
-	painter->setBrush(Qt::green);
+	painter->setBrush(pBrush);
 	painter->drawRect(-50, -50, 100, 100);
 }
 //! [10]

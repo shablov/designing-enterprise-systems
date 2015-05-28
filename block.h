@@ -17,12 +17,13 @@ class BlockItem :public QObject, public QGraphicsRectItem
 public:
 	BlockItem(BlockType type = noneBlock, QString name = "", QGraphicsItem *parent = -0);
 	~BlockItem();
-
+	void removeReferenceAndLine(BlockItem* bi);
 	void addReference(BlockItem* bi);
 	void removeReference(BlockItem* bi);
 	QList<BlockItem *> reference();
 	bool isReference(BlockItem* bi);
 
+	bool isLineItem(QGraphicsLineItem * line);
 	void addLineItem(QGraphicsLineItem * line);
 	void deleteLine(QList<QGraphicsLineItem*> list);
 	void deleteLine(QGraphicsLineItem* lineitem);
@@ -32,8 +33,8 @@ public:
 	void setName(const QString name);
 
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-	int getFrequencyOfActivation() const;
-	void setFrequencyOfActivation(int value);
+	double getFrequencyOfActivation() const;
+	void setFrequencyOfActivation(double value);
 
 protected:
 	float height, width;
@@ -45,7 +46,8 @@ private:
 	BlockType pType;
 	QList<QGraphicsLineItem*> pLineList;
 	QList<BlockItem*> pReference;
-	int frequencyOfActivation;
+	double frequencyOfActivation;
+
 };
 
 #endif // BLOCKITEM_H

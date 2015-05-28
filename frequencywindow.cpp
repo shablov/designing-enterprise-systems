@@ -1,6 +1,6 @@
 #include "frequencywindow.h"
 #include <QPushButton>
-#include <QSpinBox>
+#include <QDoubleSpinBox>
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QDebug>
@@ -8,20 +8,22 @@ FrequencyWindow::FrequencyWindow(QList<BlockItem *> listRect, QWidget *parent) :
 {
 	listBlock = listRect;
 
-	QPushButton *bOk= new QPushButton(tr("Ok"),this);
-	QPushButton *bCansel = new QPushButton(tr("Cansel"),this);
+	//listRect[0]->setFrequencyOfActivation(1.23);
+	listBlock.at(0)->setFrequencyOfActivation(1.56);
+	QPushButton *bOk= new QPushButton(tr("Сохранить"),this);
+	QPushButton *bCansel = new QPushButton(tr("Отмена"),this);
 	QGridLayout *layout = new QGridLayout;
-
+	int j = 0;
 	for (int i = 0;i <listBlock.count();++i)
-	{
-		QSpinBox *sb = new  QSpinBox;
-		sb->setValue(listBlock[i]->getFrequencyOfActivation());
-		sb->setMinimum(1);
+	{	
+		QDoubleSpinBox  *sb = new  QDoubleSpinBox ;
+		sb->setValue(listBlock.at(i)->getFrequencyOfActivation());
+		sb->setMinimum(0.01);
+		sb->setSingleStep(0.01);
 		listSpin.append(sb);
 		QLineEdit *le = new  QLineEdit;
-		le->setText(listBlock[i]->getName());
+		le->setText(listBlock.at(i)->getName());
 		listLine.append(le);
-
 		layout->addWidget(le,0,i);
 		layout->addWidget(sb,1,i);
 	}
@@ -48,6 +50,7 @@ FrequencyWindow::FrequencyWindow(QList<BlockItem *> listRect, QWidget *parent) :
 FrequencyWindow::~FrequencyWindow()
 {
 	//ToDo deleteall list
+
 	qDeleteAll(listSpin);
 	qDeleteAll(listLine);
 }
@@ -58,8 +61,8 @@ FrequencyWindow::save()
 {
 	for(int i =0;i<listBlock.count();i++)
 	{
-		listBlock[i]->setFrequencyOfActivation(listSpin[i]->value());
-		listBlock[i]->setName(listLine[i]->text());
+		listBlock.at(i)->setFrequencyOfActivation(listSpin[i]->value());
+		listBlock.at(i)->setName(listLine[i]->text());
 	}
 	close();
 }

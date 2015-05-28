@@ -21,7 +21,7 @@ BlockItem::BlockItem(BlockType type, QString name ,QGraphicsItem *parent)
 
 	textFrequency =  new QGraphicsTextItem(this);
 	textFrequency->setPos(-width / 2, -height / 2 + 15);
-	textFrequency->setPlainText(QString("Частота:%1").arg(frequencyOfActivation));
+	textFrequency->setPlainText(QString("Частота:") + QString::number(frequencyOfActivation,'f',2));
 	textFrequency->setZValue(4);
 
 	switch (type)
@@ -34,11 +34,9 @@ BlockItem::BlockItem(BlockType type, QString name ,QGraphicsItem *parent)
 	case dataBlock:
 		setBrush(Qt::green);
 		setPen( QPen(Qt::darkBlue) );
-		textFrequency->setVisible(false);
+		//textFrequency->setVisible(false);
 		break;
 	}
-
-
 	connect(textItem, SIGNAL(destroyed()),this, SLOT(deleteLater()));//????
 }
 
@@ -56,6 +54,19 @@ BlockItem::~BlockItem()
 	//{
 	//	delete(pLineList.at(i));
 	//}
+}
+
+void BlockItem::removeReferenceAndLine(BlockItem *bi)
+{
+	foreach (QGraphicsLineItem* line, pLineList)
+	{
+		if (bi->isLineItem(line))
+		{
+			bi->deleteLine(line);
+			bi->removeReference(this);
+			removeReference(bi);
+		}
+	}
 }
 
 void BlockItem::addReference(BlockItem* bi)
@@ -78,6 +89,12 @@ bool BlockItem::isReference(BlockItem *bi)
 	if(pReference.indexOf(bi) == -1)
 		return false;
 	return true;
+}
+
+bool BlockItem::isLineItem(QGraphicsLineItem *line)
+{
+	if (pLineList.count(line) >= 0) return true;
+	else return false;
 }
 
 void BlockItem::addLineItem(QGraphicsLineItem *line)
@@ -121,15 +138,15 @@ void BlockItem::rePaintLine()
 			pLineList[i]->setLine(line1);
 	}
 }
-int BlockItem::getFrequencyOfActivation() const
+double BlockItem::getFrequencyOfActivation() const
 {
 	return frequencyOfActivation;
 }
 
-void BlockItem::setFrequencyOfActivation(int value)
+void BlockItem::setFrequencyOfActivation(double value)
 {
 	frequencyOfActivation = value;
-	textFrequency->setPlainText(QString("Частота:%1").arg(frequencyOfActivation));
+	textFrequency->setPlainText(QString("Частота:") + QString::number(frequencyOfActivation,'f',2));
 }
 
 void BlockItem::paint(QPainter *painter, const QStyleOptionGraphicsItem* option,  QWidget* widget)

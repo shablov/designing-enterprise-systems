@@ -3,6 +3,7 @@
 #include "designingview.h"
 #include <QMainWindow>
 #include "frequencywindow.h"
+#include <QLineEdit>
 
 class QAction;
 
@@ -22,18 +23,29 @@ private:
 
 	void createMenuBar();
 	void createFileMenu();
-	void createBlockMenu();
-	void createInitialMenu();
-	void createCalculationMenu();
+	void createDataMenu();
+	void createProcesMenu();
 
+	void createCalculationMenu();
+	void createInitialMenu();
 	void createCentralWidget();
 
+
+
 private slots:
+	void newProject();
 	void addDataBlock();
 	void addProcessBlock();
-	void AddFrequency();
-	void calc();
-	void viewF();
+	void AddFrequencyProcess();
+	void AddFrequencyData();
+	//void calc();
+	void viewData();
+	void viewProcess();
+	void saveFile();
+	void ViewBracketData();
+	void ViewCoefficientsData();
+	void ViewBracketProces();
+	void ViewCoefficientsProces();
 private:
 	DesigningView *DView;
 
@@ -42,8 +54,19 @@ private:
 	QAction *pSaveFileAs;
 	QAction *pAddDataBlock;
 	QAction *pAddProcessBlock;
-	QAction *pAddFrequency;
-	QAction *pViewF;
+	QAction *pAddFrequencyProcess;
+	QAction *pAddFrequencyData;
+	QAction *pViewData;
+	QAction *pViewProcess;
+	QAction *pViewBracketData;
+	QAction *pViewCoefficientsData;
+	QAction *pViewBracketProces;
+	QAction *pViewCoefficientsProces;
+	QAction *pNew;
+
+	QLineEdit *processEdit;
+	QLineEdit *dataEdit;
+
 
 };
 

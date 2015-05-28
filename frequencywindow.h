@@ -2,7 +2,7 @@
 #define FREQUENCYWINDOW_H
 #include <QWidget>
 #include "block.h"
-#include <QSpinBox>
+#include <QDoubleSpinBox>
 #include <QLineEdit>
 class FrequencyWindow: public QWidget
 {
@@ -14,8 +14,8 @@ public:
 private slots:
 	save();
 private:
-	QList<BlockItem *> listBlock;
-	QList<QSpinBox *> listSpin;
+	QList<BlockItem *>  listBlock;
+	QList<QDoubleSpinBox *> listSpin;
 	QList<QLineEdit *> listLine;
 };
 

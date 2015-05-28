@@ -6,13 +6,13 @@ class MyMatrix
 {
 
 public:
-	MyMatrix(int row=1, int col=1,float data = 0); // конструктор
+	MyMatrix(int row=1, int col=1,double data = 0); // конструктор
 	~MyMatrix();
 	void display();
-	void fill(float data);
+	void fill(double data);
 
-	void setData(int col, int row, float data);
-	float getData(int row, int col);
+	void setData(int col, int row, double data);
+	double getData(int row, int col);
 	int getRows() const;
 	int getCols() const;
 //	void transposition();
@@ -24,17 +24,17 @@ public:
 	static MyMatrix multi(MyMatrix m1,MyMatrix m2);
 
 
-	float &operator()(int row, int col);
-	const float &operator()(int row, int col) const;
+	double &operator()(int row, int col);
+	const double &operator()(int row, int col) const;
 private:
 	void createMatrix();
 	int rows;
 	int cols;
-	float **intdata;
+	double **intdata;
 
 
-	struct m_float
-	{float i;};
+	struct m_double
+	{double i;};
 
 };
 #endif // MATRIX_H

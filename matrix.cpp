@@ -1,13 +1,13 @@
 #include "matrix.h"
 #include "QDebug"
 
-MyMatrix::MyMatrix(int row, int col, float data)
+MyMatrix::MyMatrix(int row, int col, double data) : intdata(0)
 {
 	rows=row;
 	cols=col;
 	createMatrix();
 	fill(data);
-	//intdata = new float[row][col];
+	//intdata = new double[row][col];
 	return;
 }
 
@@ -16,7 +16,7 @@ MyMatrix::~MyMatrix()
 	//qDeleteAll(intdata);
 }
 
-float MyMatrix::getData(int row, int col)
+double MyMatrix::getData(int row, int col)
 {
 	if (row < 0 || row > rows)
 		return 0;
@@ -29,11 +29,15 @@ void MyMatrix::createMatrix()
 {
 	if (rows<1) rows = 1;
 	if (cols<1) cols = 1;
-	delete(intdata);
-	intdata=new float* [this->rows];
-	for(int i=0; i<rows;i++)
-		intdata[i]=new float [this->cols];
+	if (intdata)
+	{
+		delete(intdata);
+		intdata = 0;
+	}
 
+	intdata=new double* [this->rows];
+	for(int i=0; i<rows;i++)
+		intdata[i]=new double [this->cols];
 }
 int MyMatrix::getRows() const
 {
@@ -45,32 +49,20 @@ int MyMatrix::getCols() const
 	return cols;
 }
 
-//void matrix::transposition()
-//{
-//	matrix m(cols,rows);
-//	for (int j=0;j<rows;j++)
-//		for (int i=0;i<cols;i++)
-//			m.setData(i,j,getData(j,i));
-
-//	cols = m.getCols();
-//	rows = m.getCols();
-//	createMatrix();
-//	for (int j=0;j<rows;j++)
-//		for (int i=0;i<cols;i++)
-//			setData(i,j,m.getData(i,j));
-//}
 
 void MyMatrix::RelativeFrequency()
 {
+	qDebug()<<"Делим на частоту ";
 	for (int j=0;j<rows;j++)
 	{
-	int buff = intdata[j][j];
+	double buff = intdata[j][j];
 		for (int i=0;i<cols;i++)
 		{
 			qDebug()<<intdata[j][i]<<" "<<buff;
 			intdata[j][i] = intdata[j][i]/buff;
 		}
 	}
+	qDebug()<<"конец Делим на частоту";
 }
 
 MyMatrix MyMatrix::RelativeFrequency(MyMatrix m)
@@ -119,16 +111,16 @@ MyMatrix MyMatrix::multi(MyMatrix m1, MyMatrix m2)
 }
 
 
-void MyMatrix::setData(int row, int col,float data)
+void MyMatrix::setData(int row, int col,double data)
 {
 	if (row < 0 || row > rows)
 		return;
 	if (col < 0 || col > cols)
 		return;
-	intdata[row][col] =data;
+	intdata[row][col] = data;
 }
 
-void MyMatrix::fill(float data)
+void MyMatrix::fill(double data)
 {
 	for (int j=0;j<rows;j++)
 	{
@@ -140,7 +132,7 @@ void MyMatrix::fill(float data)
 	return;
 }
 
-float &MyMatrix::operator()(int row, int col)
+double &MyMatrix::operator()(int row, int col)
 {
 	if(row<0 || row>=rows || col<0 || col>=cols)
 		exit(2);
@@ -148,7 +140,7 @@ float &MyMatrix::operator()(int row, int col)
 
 }
 
-const float &MyMatrix::operator()(int row, int col) const
+const double &MyMatrix::operator()(int row, int col) const
 {
 	return intdata[row][col];
 }

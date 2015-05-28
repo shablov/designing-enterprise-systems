@@ -18,7 +18,8 @@ public slots:
 
 
 public:
-	DesigningViewF(MyMatrix mat, QList<BlockItem*> blockItems,QWidget *parent = 0);
+	DesigningViewF(MyMatrix mat, QList<BlockItem*> blockItems,QStringList list,QWidget *parent = 0);
+	//DesigningViewF(MyMatrix mat, QStringList stringlist,BlockType Type,QWidget *parent = 0);
 	~DesigningViewF();
 
 	void itemMoved();
@@ -31,6 +32,7 @@ public slots:
 	void zoomOut();
 
 protected:
+	void resizeEvent(QResizeEvent *event);
 	void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 #ifndef QT_NO_WHEELEVENT
 	void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
@@ -40,6 +42,7 @@ protected:
 
 private:
 	int timerId;
+	int count;
 protected:
 	void timerEvent(QTimerEvent *);
 
@@ -47,8 +50,11 @@ protected:
 private:
 	void visibleGraph(MyMatrix mat);
 	QList<BlockItem *> pListBlockItem;
+	QStringList pstringList;
 	QGraphicsScene *pScene;
+	BlockType type;
 	QGraphicsView *pView;
+	int integer;
 
 
 };

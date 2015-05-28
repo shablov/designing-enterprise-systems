@@ -4,8 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
+QT += core gui
+QT += xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TEMPLATE = app
@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     designingviewf.cpp \
     edge.cpp \
     node.cpp \
-    mathem.cpp
+    mathem.cpp \
+    windowsbracketrecording.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -39,7 +40,12 @@ HEADERS  += mainwindow.h \
     designingviewf.h \
     edge.h \
     node.h \
-    mathem.h
+    mathem.h \
+    windowsbracketrecording.h
 
 FORMS +=
+
+DISTFILES += \
+    source/cross.png \
+    source/crossBlack.png
 
