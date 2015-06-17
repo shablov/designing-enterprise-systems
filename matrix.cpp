@@ -120,6 +120,15 @@ void MyMatrix::setData(int row, int col,double data)
 	intdata[row][col] = data;
 }
 
+void MyMatrix::PlusData(int col, int row, double data)
+{
+	if (row < 0 || row > rows)
+		return;
+	if (col < 0 || col > cols)
+		return;
+	intdata[row][col] += data;
+}
+
 void MyMatrix::fill(double data)
 {
 	for (int j=0;j<rows;j++)

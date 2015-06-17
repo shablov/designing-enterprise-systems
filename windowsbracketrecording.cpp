@@ -5,7 +5,6 @@
 #include <QTextCursor>
 #include <QCompleter>
 #include <QMessageBox>
-//#include <QScrollBar>
 #include <designingview.h>
 #include <QCompleter>
 #include <QKeyEvent>
@@ -18,248 +17,364 @@
 
 
 
-WindowsBracketRecording::WindowsBracketRecording(BlockType Type, DesigningView *DV, QWidget *parent)
-	: QWidget(parent),DView(DV),type(Type),pTree(0)
-{
-	QList <BlockItem *>list;
-	TextEdit = new QTextEdit;
-	TextEdit->installEventFilter(this);
-
-	switch (type)
-	{
-	case processBlock:
-
-		TextEdit->setText(DView->getBracketProcess());
-		list = DView->getListProces();
-		break;
-	case dataBlock:
-		TextEdit->setText(DView->getBracketData());
-		list = DView->getListData();
-		break;
-	}
-	QString SameName = checkTheSameName(list);
-	if (SameName != "")
-	{
-		QMessageBox msgBox;
-		msgBox.setText("Имеются повторяющиеся имена :\"" + SameName + "\". Расчеты могут быть неверные"  );
-		msgBox.setStandardButtons(QMessageBox::Ok);
-		msgBox.setIcon(QMessageBox::Warning);
-		msgBox.exec();
-	}
-
-	//QStringList stringList;
-	for(int i = 0; i < list.count();i++)
-	{
-		stringList.append(list.at(i)->getName());
-		//qDebug()<<stringList.back();
-	}
-	//	completer = new QCompleter(stringList);
-	//	index = 0;
-
-
-	//	completer->setWidget(TextEdit);
-	//	completer->setCompletionMode(QCompleter::PopupCompletion);
-	//	completer->setCaseSensitivity(Qt::CaseInsensitive);
-	//	QObject::connect(completer, SIGNAL(activated(QString)),
-	//					 this, SLOT(insertCompletion(QString)));
-
-
-
-	QPushButton *bOk= new QPushButton(tr("Сохранить"),this);
-	QPushButton *bCansel = new QPushButton(tr("Отмена"),this);
-
-	QGridLayout *layout = new QGridLayout;
-	layout->addWidget(TextEdit,0,0,5,5);
-	layout->addWidget(bOk,6,4);
-	layout->addWidget(bCansel,6,5);
-	setLayout(layout);
-	connect(bCansel,SIGNAL(clicked()),this,SLOT(exit()));
-	connect(bOk,SIGNAL(clicked()),this,SLOT(save()));
-}
-
-
-
 WindowsBracketRecording::~WindowsBracketRecording()
 {
 
 }
 
-bool WindowsBracketRecording::eventFilter(QObject *obj, QEvent *event)
+WindowsBracketRecording::WindowsBracketRecording(BlockType Type, DesigningView *DV, QWidget *parent)
+	: QWidget(parent),DView(DV),type(Type),pTree(0)
 {
-
-	if (obj == TextEdit && event->type() == QEvent::KeyPress)
+	TextEdit = new QTextEdit;
+	TextEdit->installEventFilter(this);
+	QList<BlockItem *> bi;
+	switch (type)
 	{
-		QKeyEvent *event = new QKeyEvent ( event->KeyPress, event->key(), event->modifiers());
-		keyPressEvent(event);
-
+	case processBlock:
+		TextEdit->setText(DView->getBracketProcess());
+		bi = DView->getListProces();
+		break;
+	case dataBlock:
+		TextEdit->setText(DView->getBracketData());
+		bi = DView->getListData();
+		break;
 	}
-	return QWidget::eventFilter(obj,event);
+	listName = BlockToList(bi);
+	completer = new QCompleter(listName);
+	completer->setWidget(TextEdit);
+	completer->setCompletionMode(QCompleter::PopupCompletion);
+	completer->setCaseSensitivity(Qt::CaseInsensitive);
+	QObject::connect(completer, SIGNAL(activated(QString)),
+					 this, SLOT(insertCompletion(QString)));
+
+	QPushButton *bOk = new QPushButton(tr("Сохранить"),this);
+	QPushButton *bCansel = new QPushButton(tr("Отмена"),this);
+	QPushButton *bCheck = new QPushButton(tr("Проверить"),this);
+
+
+	QGridLayout *layout = new QGridLayout;
+	layout->addWidget(TextEdit,0,0,5,5);
+	layout->addWidget(bOk,6,3);
+	layout->addWidget(bCansel,6,4);
+	layout->addWidget(bCheck,6,0);
+	setLayout(layout);
+	connect(bCansel,SIGNAL(clicked()),this,SLOT(exit()));
+	connect(bOk,SIGNAL(clicked()),this,SLOT(save()));
+	connect(bCheck,SIGNAL(clicked()),this,SLOT(check()));
 }
 
-void WindowsBracketRecording::keyPressEvent(QKeyEvent *event)
+QString WindowsBracketRecording::isRepeating(QStringList list, bool concludedMsgBox)
 {
-	//qDebug()<<event->key();
-	bool isShortcut = ((event->modifiers() & Qt::ControlModifier) && event->key() == Qt::Key_E);
+
+	QStringList strlst;
+	for (int i = 0;i < list.count()-1;i++)
+		for (int j = i+1;j < list.count();j++)
+			if (list.at(i) == list.at(j))
+				if (strlst.count(list.at(i)) == 0)
+					strlst.append(list.at(i));
+	if(strlst.count() == 0) return "";
 
 
-	if(isShortcut)
+	QString str;
+	for (int i = 0;i < strlst.count();i++)
+		str +=  " \"" + strlst.at(i) + "\", ";// + (i == strlst.count() - 1)?", ":".";
+
+	if(concludedMsgBox)
 	{
-		qDebug()<<event->KeyPress;
-		//completer->popup()->show();
-		//if((!nextCompleter())&&(!nextCompleter()))
-		//	return;
-		//TextEdit->setText(completer->currentCompletion());
-		//return;
-	}//else
-	//QTextEdit::keyPressEvent(event);
-	//completer->setCompletionPrefix(TextEdit->toPlainText());
-	//index = 0;
+		QMessageBox msgBox;
+		msgBox.setText("Имеются повторяющиеся имена:" + str + " расчеты могут быть неверные. ");
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.exec();
+	}
+	return "Имеются повторяющиеся имена:" + str;
 }
 
-myTree *WindowsBracketRecording::BuildTree(QString str)
+QString WindowsBracketRecording::isRepeating(QList<BlockItem *> list, bool concludedMsgBox)
 {
-	qDebug()<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-	qDebug()<<str.size()<<" "<<str;
-	if (str == "") return 0;
-	if (str == " ") return 0;
-	if (str == ",") return 0;
-	if (str == "\"")return 0;
+	return isRepeating(BlockToList(list),concludedMsgBox);
+}
 
-	myTree *tree = new myTree;
-	if (stringList.indexOf(str) != -1)
+QString WindowsBracketRecording::isCorrectFirstCheck(QString string, QList<BlockItem *> list, bool concludedMsgBox)
+{
+	return isCorrectFirstCheck(string,BlockToList(list),concludedMsgBox);
+}
+
+QString WindowsBracketRecording::isCorrectFirstCheck(QString string, QStringList list, bool concludedMsgBox)
+{
+	if (string == "") return "";
+	//if(!list) list = listName;
+	QString result;
+	QString text = string.replace("\t", " ");
+	text = string.replace("\n", " ");
+
+	result = isRepeating(list);
+	if (result == "" && list.count(string) != 0) return "";
+
+	int i = text.count(")");
+	int j = text.count("(");
+	if ( i != j)
 	{
-		tree->MyName = str;
+		QString str = "\"%1\" больше чем \"%2\" на %3. ";
+		if (i > j) str = str.arg(")").arg("(").arg(i - j);
+		else str = str.arg("(").arg(")").arg(j - i);
+		result += str;
+	}
+
+	if (text.count("\"") % 2 == 1)
+		result += "Не хватает кавычек. ";
+
+	if (result == "")
+	{
+		QStringList buff = listName;
+		listName = list;
+		result += isCorrect(text);
+		listName = buff;
+	}
+
+	if (result != "")
+	{
+		if (concludedMsgBox)
+		{
+			QMessageBox msgBox;
+			msgBox.setText("Имеются ошибки :" + result);
+			msgBox.setStandardButtons(QMessageBox::Ok);
+			msgBox.setIcon(QMessageBox::Warning);
+			msgBox.exec();
+		}
+	}
+	return result;
+}
+
+QStringList WindowsBracketRecording::BlockToList(QList<BlockItem *> list)
+{
+	QStringList sList;
+	for(int i = 0;i<list.count();i++)
+	{
+		sList.append(list[i]->getName());
+	}
+	return sList;
+}
+
+myTree *WindowsBracketRecording::buildTree()
+{
+	myTree *tree = buildTree(TextEdit->toPlainText());
+
+	nameNoInTree = listName;
+
+	if (!tree)
+	{
+		tree = new myTree;
+		for(int i = 0;i<listName.count();i++)
+		{
+			myTree *buffTree = new myTree;
+			buffTree->MyName = nameNoInTree[i];
+			tree->child.append(buffTree);
+			tree->MyName += (i!=0?", ":"") + nameNoInTree[i];
+		}
 		return tree;
 	}
 
 
-
-
-	int start = 0;
-	int end = 0;
-	for (int j = 0;j< str.size();j++)
+	checkNameInTree(tree);
+	if (nameNoInTree.count() == 0) return tree;
+	myTree *result = new myTree;
+	result->child.append(tree);
+	result->MyName = tree->MyName;
+	for(int i = 0;i<nameNoInTree.count();i++)
 	{
-		QChar currentChar = str.at(j);
-		if (str.at(j) == ')') return 0;
+		myTree *buffTree = new myTree;
+		buffTree->MyName = nameNoInTree[i];
+		result->child.append(buffTree);
+		result->MyName += ", " + nameNoInTree[i];
+	}
+	return result;
+}
 
-		if (str.at(j) == '(')
+myTree *WindowsBracketRecording::buildTree(QString string)
+{
+	qDebug()<<"!!!!!!!!!!!!!!!!!!!!!";
+	qDebug()<<string.size()<<" "<<string;
+	if (string == "") return 0;
+	if (string == " ") return 0;
+	if (string == ",") return 0;
+	if (string == "\"")return 0;
+	if (string == "(")return 0;
+	if (string == ")")return 0;
+
+	if(listName.indexOf(string) != -1)
+	{
+		myTree *tree = new myTree;
+		tree->MyName = string;
+		return tree;
+	}
+	int i = string.indexOf('\"');
+	int j = string.indexOf('(');
+	if (i != -1 || j != -1)
+	{
+		if((i < j && i !=-1) || (j ==-1))
 		{
-
-			QString string = str.mid(start,j - start + 1);
-			if (stringList.indexOf(string) != -1)
+			myTree *tree = new myTree;
+			if (i != 0)
 			{
-				myTree *treeChild = new myTree;
-				treeChild->MyName = string;
-				tree->child.append(treeChild);
+				myTree *tree1 = buildTree(string.left(i));
+				if (tree1) tree->child.append(tree1);
 			}
 
-			int i = doublesSign(str,j,"()");
-			myTree *treeChild;
-
-			treeChild = BuildTree(str.mid(j+1,i - j - 2));
-			if(treeChild)
+			j =string.indexOf("\"",i + 1);
+			if (j != -1)
 			{
-				tree->child.append(treeChild);
-			}
-			j = i;
-			start = j;
+				myTree *tree1 = buildTree(string.mid(i+1,j - i - 2));
+				if (tree1) tree->child.append(tree1);
 
-		}else if (str.at(j) == '\"')
+				if (j +1 != string.count())
+				{
+					myTree *tree2 = buildTree( string.mid(j+1,string.count()));
+					if (tree2) tree->child.append(tree2);
+				}
+			}
+			if (tree->child.count() == 0) return 0;
+			if (tree->child.count() == 1) return tree->child.at(0);
+			tree->MyName = "(";
+			for(int i = 0;i < tree->child.count();i++)
+			{
+				tree->MyName +=tree->child.at(i)->MyName +(((i+1)!=tree->child.count()?", ":")"));
+				tree->child.at(i)->parent = tree;
+			}
+			return tree;
+		}else
 		{
-			QString string = str.mid(start,j - start + 1);
-			if (stringList.indexOf(string) != -1)
+			myTree *tree = new myTree;
+			if (j != 0)
 			{
-				myTree *treeChild = new myTree;
-				treeChild->MyName = string;
-				tree->child.append(treeChild);
+				myTree *tree1 = buildTree(string.left(j));
+				if (tree1) tree->child.append(tree1);
 			}
 
-			int index = str.indexOf("\"",j+1);
-			string = str.mid(j+1,index - j-1);
+			i = doublesSign(string,j,"()");
+			if (i != -1)
+			{
+				myTree *tree1 = buildTree(string.mid(j+1,i - j - 2));
+				if (tree1) tree->child.append(tree1);
 
-			start = j;
-			if (stringList.indexOf(string) != -1)
-			{
-				myTree *treeChild = new myTree;
-				treeChild->MyName = string;
-				tree->child.append(treeChild);
-			}
-			j = index + 1;
-		}else if (str.at(j) == ' ' or str.at(j) == ',')
-		{
-			qDebug()<<",";
-			QString string = str.mid(start,j - start);
-			start = j+1;
+				if (i +1 != string.count())
+				{
+					myTree *tree2 = buildTree( string.mid(i+1,string.count()));
+					if (tree2) tree->child.append(tree2);
 
-			if (stringList.indexOf(string) != -1)
-			{
-				myTree *treeChild = new myTree;
-				treeChild->MyName = string;
-				tree->child.append(treeChild);
+				}
 			}
-		}else if (j ==str.size() - 1)
-		{
-			QString string = str.mid(start,j - start + 1);
-			if (stringList.indexOf(string) != -1)
+			if (tree->child.count() == 0) return 0;
+			if (tree->child.count() == 1) return tree->child.at(0);
+			tree->MyName = "(";
+			for(int i = 0;i < tree->child.count();i++)
 			{
-				myTree *treeChild = new myTree;
-				treeChild->MyName = string;
-				tree->child.append(treeChild);
+				tree->MyName +=tree->child.at(i)->MyName + ((i+1)!=tree->child.count()?", ":")");
+				tree->child.at(i)->parent = tree;
 			}
+			return tree;
 		}
 	}
-	if (tree->child.count() == 0) return 0;
-	if (tree->child.count() == 1)
-	{
-		return tree->child.at(0);
-		delete tree;
-	}
-	tree->MyName = "(";
-	for(int i = 0;i< tree->child.count();i++)
-		tree->MyName+= tree->child[i]->MyName + ",";
-	tree->MyName=tree->MyName.left(tree->MyName.count() -1) + ")";
 
+	i = string.indexOf(',');
+	if (i == -1)
+	{
+		i = string.indexOf(' ');
+		if (i ==-1)return 0;
+	}
+	myTree *tree = new myTree;
+	myTree	*tree1 = buildTree(string.left(i));
+	if(tree1) tree->child.append(tree1);
+	tree1 = buildTree(string.mid(i+1,string.count()));
+	if(tree1) tree->child.append(tree1);
+	if (tree->child.count() == 0) return 0;
+	if (tree->child.count() == 1) return tree->child.at(0);
+	tree->MyName = "(";
+	for(int i = 0;i < tree->child.count();i++)
+	{
+		tree->MyName +=tree->child.at(i)->MyName + ((i+1)!=tree->child.count()?", ":")");
+		tree->child.at(i)->parent = tree;
+	}
 	return tree;
 }
 
-void WindowsBracketRecording::AddTheMissingBranches()
+void WindowsBracketRecording::checkNameInTree(myTree *tree)
 {
-	if (!pTree)
-	{
-		pTree = new myTree;
-		pTree->MyName = "(";
-		witchAddTheMissingBranches = stringList;
-	}else
-	{
-		witchAddTheMissingBranches = stringList;
-		checkTreeName(pTree);
-		//pTree->MyName = pTree->MyName.left(pTree->MyName.count() - 1) + ",";
-	}
-	for(int i = 0; i<witchAddTheMissingBranches.count();i++)
-	{
-		myTree *tree = new myTree;
-		tree->MyName += witchAddTheMissingBranches.at(i);
-		tree->parent = pTree;
-		pTree->MyName += tree->MyName + ",";
-		pTree->child.append(tree);
-	}
-	pTree->MyName = pTree->MyName.left(pTree->MyName.count() - 1) + ")";
-	qDebug()<<pTree->MyName;
-}
-
-void WindowsBracketRecording::checkTreeName(myTree *tree)
-{
-	if (tree->child.count() == 0)
-		witchAddTheMissingBranches.removeAll(tree->MyName);
+	if (tree->child.count() == 0) nameNoInTree.removeAll(tree->MyName);
 	else
 	{
-		for(int i = 0; i<tree->child.count();i++)
+		for(int i =0; i < tree->child.count();i++)
 		{
-			checkTreeName(tree->child[i]);
-			tree->child[i]->parent = tree;
+			checkNameInTree(tree->child.at(i));
 		}
 	}
 }
+
+QString WindowsBracketRecording::isCorrect(QString string)
+{
+	qDebug()<<"-------------------------------------";
+	qDebug()<<string.size()<<" "<<string;
+	if (string == "") return "";
+	if (string == " ") return "";
+	if (string == ",") return "";
+	if (string == "\"")return "Ошибка при разборе из-за кавычки, что-то не так со скобками.";
+
+	//int start = 0;
+	//int end = 0;
+
+	if(listName.indexOf(string) != -1)
+	{
+		namesForCheck.append(string);
+		return "";
+	}
+	int i = string.indexOf('\"');
+	int j = string.indexOf('(');
+	if (i != -1 || j != -1)
+	{
+		if((i < j && i !=-1) || (j ==-1))
+		{
+			QString error;
+
+			if (i != 0) error += isCorrect(string.left(i));
+
+			j =string.indexOf("\"",i + 1);;
+			if (j == -1) error+= "Ошибка в расположении скобок, не найти парную кавычку";
+			else
+			{
+				error += isCorrect(string.mid(i+1,j - i - 1));
+				if (j +1 != string.count())
+					error +=isCorrect( string.mid(j+1,string.count()));
+			}
+			return error;
+		}else
+		{
+			QString error;
+
+			if (j != 0) error += isCorrect(string.left(j));
+
+			i = doublesSign(string,j,"()");
+			if (i == -1) error+= "Ошибка в расположении скобок, не найти парную";
+			else
+			{
+				error += isCorrect(string.mid(j+1,i - j - 2));
+
+				if (i +1 != string.count()) error += isCorrect( string.mid(i+1,string.count()));
+			}
+			return error;
+		}
+	}
+
+	i = string.indexOf(',');
+	if (i == -1)
+	{
+		i = string.indexOf(' ');
+		if (i ==-1)return "Не известное имя:\"" + string + "\".";
+	}
+
+	return isCorrect(string.left(i)) + isCorrect(string.mid(i+1,string.count()));
+}
+
+
 
 int WindowsBracketRecording::doublesSign(QString str, int i, QString parametr)
 {
@@ -281,40 +396,74 @@ int WindowsBracketRecording::doublesSign(QString str, int i, QString parametr)
 	{
 		return str.indexOf("\"",i++);
 	}
+}
 
+void WindowsBracketRecording::check()
+{
+	QMessageBox msgBox;
+
+	namesForCheck.clear();
+	QString str = isCorrectFirstCheck(TextEdit->toPlainText(),listName);
+	str +=isRepeating(namesForCheck);
+	if(str == "")   msgBox.setText("Ошибки не обнаружены");
+	else {
+		msgBox.setText("Ошибки:");
+		msgBox.setInformativeText(str);
+	}
+	msgBox.setStandardButtons(QMessageBox::Ok);
+	msgBox.setButtonText(QMessageBox::Ok,tr("Закрыть"));
+	msgBox.exec();
+}
+
+bool WindowsBracketRecording::check(bool xz)
+{
+	namesForCheck.clear();
+	QString str = isCorrectFirstCheck(TextEdit->toPlainText(),listName);
+	str +=isRepeating(namesForCheck);
+	if(str == "")  return true;
+	else return false;
+}
+
+void WindowsBracketRecording::saveResult(bool saveTree)
+{
+	switch (type)
+	{
+	case processBlock:
+		DView->setBracketProcess(TextEdit->toPlainText());
+		DView->setTreeProcess(buildTree());
+		//qDebug()<<DView->getTreeProcess()->MyName;
+		break;
+	case dataBlock:
+		DView->setBracketData(TextEdit->toPlainText());
+		DView->setTreeData(buildTree());
+		//qDebug()<<DView->getTreeData()->MyName;
+		break;
+	}
 }
 
 void WindowsBracketRecording::save()
 {
-	if (correct() == true)
+	QString str = isCorrectFirstCheck(TextEdit->toPlainText(),listName) ;
+	if (str == "")
 	{
-		QString str;
-		str = TextEdit->toPlainText().replace("\t"," ");
-		str = str.replace("\n"," ");
-		pTree = BuildTree(str.remove(QRegExp("[\\n\\t\\r]")));
-		if(pTree)
-			qDebug()<<"Name"<< pTree->MyName;
-
-		saveParametr(true);
+		saveResult(true);
 		exit();
 	}
 	else
 	{
 		QMessageBox msgBox;
 		msgBox.setText("Обнаружены ошибки:" );
-		msgBox.setInformativeText(ErrorNames);
+		msgBox.setInformativeText(str);
 		msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 		msgBox.setButtonText(QMessageBox::Save,tr("Сохранить"));
 		msgBox.setButtonText(QMessageBox::Discard,tr("Не сохранять"));
 		msgBox.setButtonText(QMessageBox::Cancel,tr("Отмена"));
-		msgBox.setDefaultButton(QMessageBox::Save);
+		msgBox.setDefaultButton(QMessageBox::Discard);
 
-		int ret;
-		ret = msgBox.exec();
-
+		int ret = msgBox.exec();
 		switch (ret) {
 		case QMessageBox::Save:
-			saveParametr();
+			saveResult();
 			exit();
 			break;
 		case QMessageBox::Discard:
@@ -328,239 +477,7 @@ void WindowsBracketRecording::save()
 	}
 }
 
-void WindowsBracketRecording::insertCompletion(const QString &completion)
-{
-	QTextCursor tc = TextEdit->textCursor();
-	int extra = completion.length() - completer->completionPrefix().length();
-	tc.movePosition(QTextCursor::Left);
-	tc.movePosition(QTextCursor::EndOfWord);
-	tc.insertText(completion.right(extra));
-
-	TextEdit->setTextCursor(tc);
-}
-
 void WindowsBracketRecording::exit()
 {
 	close();
-}
-
-void WindowsBracketRecording::saveParametr(bool saveTree)
-{
-	AddTheMissingBranches();
-	switch (type)
-	{
-	case processBlock:
-		DView->setBracketProcess(TextEdit->toPlainText());
-		if (saveTree) DView->setTreeProcess(pTree);
-		else DView->setTreeProcess(0);
-		break;
-	case dataBlock:
-		DView->setBracketData(TextEdit->toPlainText());
-		if (saveTree) DView->setTreeData(pTree);
-		else DView->setTreeData(0);
-		break;
-	}
-}
-
-void WindowsBracketRecording::savePublic(bool showMsg)
-{
-	if (correct() == true)
-	{
-		QString str;
-		str = TextEdit->toPlainText().replace("\t"," ");
-		str = str.replace("\n"," ");
-		pTree = new myTree;
-		pTree = BuildTree(str.remove(QRegExp("[\\n\\t\\r]")));
-		//qDebug()<<"Name"<< pTree->MyName;
-
-		saveParametr(true);
-		//exit();
-	}
-	else
-	{
-
-	}
-
-}
-
-QString WindowsBracketRecording::checkTheSameName(QList<BlockItem *> list)
-{
-	for(int i = 0;i < list.count() - 1;i++)
-		for(int j = i + 1;j < list.count();j++)
-			if( list[i]->getName() == list[j]->getName())
-				return  list[i]->getName();
-	return "";
-}
-
-bool WindowsBracketRecording::correct()
-{
-
-	QString text = TextEdit->toPlainText();
-	if (text == "") return true;
-	ErrorNames = "";
-	checkName.clear();
-	int i = text.count(")");
-	int j = text.count("(");
-	if ( i != j)
-	{
-		QString str = "\"%1\" больше чем \"%2\" на %3.";
-		if (i > j) str = str.arg(")").arg("(").arg(i - j);
-		else str = str.arg("(").arg(")").arg(j - i);
-		ErrorNames += str;
-		return false;
-	}
-	if (text.count("\"") % 2 == 1)
-	{
-		ErrorNames += "Не хватает кавычек. ";
-		return false;
-	}
-	QString str;
-	str = TextEdit->toPlainText().replace("\t"," ");
-	str = str.replace("\n"," ");
-
-	return checkCorrectName(str.remove(QRegExp("[\\n\\t\\r]")));
-	//stringList.count();
-	//for (int i = 0;i < )
-
-}
-
-bool WindowsBracketRecording::checkCorrectName(QString str)
-{
-	qDebug()<<"-------------------------------------";
-	qDebug()<<str.size()<<" "<<str;
-	if (str == "") return true;
-	if (str == " ") return true;
-	if (str == ",") return true;
-	if (str == "\"")
-	{
-		ErrorNames +="Внутри кавычек скобки, программа так не может. ";
-		return false;
-	}
-	if ( str.count("(") != 0)
-	{
-		qDebug()<<"()";
-		int count = 1;
-		int i = str.indexOf("(");
-		int j = i+1;
-
-		while (j < str.size() && count != 0)
-		{
-			if (str.at(j) == '(') count++;
-			if (str.at(j) == ')') count--;
-			j++;
-		}
-		if (count != 0 && i ==  str.size())
-		{
-			ErrorNames +="К последней скобке не нашел парную. ";
-			return false;
-		}
-		j = j - 1;
-		qDebug()<<i<<" "<<j;
-
-		bool b0,b1,b2;
-		if (i == 0) b0 = true;
-		else b0 = checkCorrectName(str.left(i));
-
-		b1 = checkCorrectName(str.mid(i + 1,j - i - 1));
-
-		if (j == str.size() - 1) b2 = true;
-		else b2 = checkCorrectName(str.right(str.size() - j - 1));
-
-		return b0 && b1 && b2;
-	}
-
-	if ( str.count("\"") != 0)
-	{
-		if (str.count("\"") == 1)
-		{
-			ErrorNames+="При разборе строк, осталась кавычка, проверте правильность записи. ";
-			return false;
-		}
-		qDebug()<<"\"";
-		int i = str.indexOf("\"");
-		int j = str.indexOf("\"",i+1);
-		qDebug()<<i<<" "<<j;
-		bool b0,b1,b2;
-
-		if (i == 0) b0 = true;
-		else b0 = checkCorrectName(str.left(i));
-
-		b1 = checkCorrectName(str.mid(i + 1,j - i - 1));
-
-		if (j == str.size() - 1) b2 = true;
-		else b2 = checkCorrectName(str.right(str.size() - j - 1));
-
-		return b0 && b1 && b2;
-	}
-
-
-	if (stringList.indexOf(str) != -1)
-	{
-		if (checkName.indexOf(str) != -1)
-		{
-			ErrorNames+="Найдено повторяющееся имя:\""  + str.simplified() + "\".";
-			return false;
-		}else
-		{
-			checkName.append(str);
-			return true;
-		}
-	}
-	if ( str.count(",") != 0)
-	{
-		qDebug()<<",";
-		bool b0,b1;
-		int i = str.indexOf(",");
-		qDebug()<<i<<" "<<str.size() - 1<<" "<<str.left(i)<<" "<<str.right(str.size() - i - 1);
-
-		if (i == 0) b0 = true;
-		else b0 =  checkCorrectName(str.left(i));
-
-		if (i == str.size()  ) b1 = true;
-		else b1 =  checkCorrectName(str.right(str.size() - i - 1));
-
-		return b0 && b1;
-	}
-
-	if ( str.count(" ") != 0)
-	{
-		qDebug()<<" ";
-		bool b0,b1;
-		int i = str.indexOf(" ");
-		qDebug()<<i;
-		qDebug()<<checkCorrectName(str.left(i));
-		qDebug()<<checkCorrectName(str.right(str.size() - i - 1));
-		if (i == 0) b0 = true;
-		else b0 = checkCorrectName(str.left(i));
-
-		if (i == str.size() -1 ) b1 = true;
-		else  b1 = checkCorrectName(str.right(str.size() - i - 1));
-		qDebug()<<b0,b1;
-		//qDebug()<<str.left(i);
-		//qDebug()<<str.right(str.size() - i - 1);
-		return b0 && b1;
-	}
-	ErrorNames += "Не найдено имя: \"" + str.simplified() + "\".";
-	return false;
-}
-
-bool WindowsBracketRecording::nextCompleter()
-{
-	if(completer->setCurrentRow(index++)) return true;
-	index = 0;
-	return false;
-}
-
-QString WindowsBracketRecording::parser()
-{
-	QString str;
-	str = TextEdit->toPlainText();
-	if(str.count("\"" ) % 2 == 1)
-	{
-		qDebug()<<str.right(str.size() - str.count("\"" ));
-		return str.right(str.size() - str.count("\"" ) );
-	}else
-	{
-
-	}
 }

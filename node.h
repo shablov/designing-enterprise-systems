@@ -55,7 +55,7 @@ QT_END_NAMESPACE
 class Node : public QGraphicsItem
 {
 public:
-	Node(DesigningViewF *graphWidget, QString text ,BlockType pType);
+	Node(DesigningViewF *graphWidget,double fre, QString text ,BlockType pType);
 
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;

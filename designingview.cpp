@@ -149,12 +149,12 @@ void DesigningView::addBlock(BlockType type, QPoint point)
 	switch (type)
 	{
 	case processBlock:
-		name = QString("Процесс%1").arg(pListProces.count());
+		name = QString("П%1").arg(pListProces.count());//Процесс%
 		item = new BlockItem(type,name);
 		pListProces.append(item);
 		break;
 	case dataBlock:
-		name = QString("Данные%1").arg(pListData.count());
+		name = QString("Д%1").arg(pListData.count());//"Данные%1
 		item = new BlockItem(type,name);
 		pListData.append(item);
 		break;
@@ -251,38 +251,41 @@ void DesigningView::startFunc()
 	addBlock(processBlock,QPoint(360,200));
 	addBlock(processBlock,QPoint(360,300));
 	addBlock(processBlock,QPoint(360,400));
-	addBlock(processBlock,QPoint(360,500));
 
-	pListProces.at(0)->setFrequencyOfActivation(1);
-	pListProces.at(1)->setFrequencyOfActivation(0.5);
-	pListProces.at(2)->setFrequencyOfActivation(1.5);
-	pListProces.at(3)->setFrequencyOfActivation(4);
-	pListProces.at(4)->setFrequencyOfActivation(1);
+
+	pListProces.at(0)->setFrequencyOfActivation(5);
+	pListProces.at(1)->setFrequencyOfActivation(5);
+	pListProces.at(2)->setFrequencyOfActivation(1);
+	pListProces.at(3)->setFrequencyOfActivation(1);
+
 
 	addBlock(dataBlock,QPoint(160,200));
 	addBlock(dataBlock,QPoint(160,400));
 	addBlock(dataBlock,QPoint(560,200));
 	addBlock(dataBlock,QPoint(560,400));
+	addBlock(dataBlock,QPoint(560,500));
 	pListData.at(0)->setFrequencyOfActivation(10);
 	pListData.at(1)->setFrequencyOfActivation(1);
 	pListData.at(2)->setFrequencyOfActivation(5);
 	pListData.at(3)->setFrequencyOfActivation(10);
+	pListData.at(4)->setFrequencyOfActivation(10);
 
-	pGraphicsView->addLinePaint(pListData.at(0),pListProces.at(0));
 	pGraphicsView->addLinePaint(pListData.at(0),pListProces.at(1));
-	pGraphicsView->addLinePaint(pListData.at(1),pListProces.at(4));
-	pGraphicsView->addLinePaint(pListData.at(2),pListProces.at(0));
+	pGraphicsView->addLinePaint(pListData.at(0),pListProces.at(2));
+	pGraphicsView->addLinePaint(pListData.at(1),pListProces.at(0));
+	pGraphicsView->addLinePaint(pListData.at(1),pListProces.at(3));
 	pGraphicsView->addLinePaint(pListData.at(2),pListProces.at(2));
 
-	pGraphicsView->addLinePaint(pListData.at(3),pListProces.at(1));
-	pGraphicsView->addLinePaint(pListData.at(3),pListProces.at(2));
 	pGraphicsView->addLinePaint(pListData.at(3),pListProces.at(3));
-	pGraphicsView->addLinePaint(pListData.at(3),pListProces.at(4));
+	pGraphicsView->addLinePaint(pListData.at(3),pListProces.at(0));
+	pGraphicsView->addLinePaint(pListData.at(4),pListProces.at(0));
+	pGraphicsView->addLinePaint(pListData.at(4),pListProces.at(2));
+	pGraphicsView->addLinePaint(pListData.at(4),pListProces.at(3));
 
 
 
-	bracketData = "((Данные1,Данные2),(Данные0,Данные3))";
-	bracketProcess = "(Процесс1,(Процесс2,Процесс0)),\"Процесс3\",(())";
+	bracketData = "(Данные0,Данные1,(Данные2,Данные3)),Данные3";
+	bracketProcess = "";
 }
 
 void DesigningView::keyPressEvent(QKeyEvent *event)

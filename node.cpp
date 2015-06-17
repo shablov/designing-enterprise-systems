@@ -48,115 +48,131 @@
 #include <QStyleOption>
 
 //! [0]
-Node::Node(DesigningViewF *graphWidget, QString text,BlockType pType)
+Node::Node(DesigningViewF *graphWidget,double fre, QString text,BlockType pType)
 	: graph(graphWidget)
 {
-	switch (pType)
+	QGraphicsRectItem *rectItem = new QGraphicsRectItem(this);
 
+	rectItem->setRect(-50,30,100,20);
+
+
+	QGraphicsTextItem *textItemFre = new QGraphicsTextItem(this);
+	textItemFre->setPlainText(QString::number(fre));
+	textItemFre->setPos(-50, 30);
+	textItemFre->setTextWidth(100);
+
+
+
+
+	switch (pType)
 	{
 	case processBlock:
 		pBrush = Qt::yellow;
+		rectItem->setBrush( Qt::green);
 		break;
 	case dataBlock:
 		pBrush = Qt::green;
+		rectItem->setBrush(Qt::yellow);
 		break;
 	}
 
-    setFlag(ItemIsMovable);
-    setFlag(ItemSendsGeometryChanges);
-    setCacheMode(DeviceCoordinateCache);
-    setZValue(-1);
+	setFlag(ItemIsMovable);
+	setFlag(ItemSendsGeometryChanges);
+	setCacheMode(DeviceCoordinateCache);
+	setZValue(-1);
 
 	QGraphicsTextItem *textItem = new QGraphicsTextItem(this);
 	textItem->setPlainText(text);
 	textItem->setPos(-50, -50);
+	textItem->setTextWidth(100);
+
 }
 //! [0]
 
 //! [1]
 void Node::addEdge(Edge *edge)
 {
-    edgeList << edge;
-    edge->adjust();
+	edgeList << edge;
+	edge->adjust();
 }
 
 QList<Edge *> Node::edges() const
 {
-    return edgeList;
+	return edgeList;
 }
 //! [1]
 
 //! [2]
 void Node::calculateForces()
 {
-    if (!scene() || scene()->mouseGrabberItem() == this) {
-        newPos = pos();
-        return;
-    }
-//! [2]
+	if (!scene() || scene()->mouseGrabberItem() == this) {
+		newPos = pos();
+		return;
+	}
+	//! [2]
 
-//! [3]
-    // Sum up all forces pushing this item away
-    qreal xvel = 0;
-    qreal yvel = 0;
-    foreach (QGraphicsItem *item, scene()->items()) {
-        Node *node = qgraphicsitem_cast<Node *>(item);
-        if (!node)
-            continue;
+	//! [3]
+	// Sum up all forces pushing this item away
+	qreal xvel = 0;
+	qreal yvel = 0;
+	foreach (QGraphicsItem *item, scene()->items()) {
+		Node *node = qgraphicsitem_cast<Node *>(item);
+		if (!node)
+			continue;
 
-        QPointF vec = mapToItem(node, 0, 0);
-        qreal dx = vec.x();
-        qreal dy = vec.y();
-        double l = 2.0 * (dx * dx + dy * dy);
-        if (l > 0) {
-            xvel += (dx * 150.0) / l;
-            yvel += (dy * 150.0) / l;
-        }
-    }
-//! [3]
+		QPointF vec = mapToItem(node, 0, 0);
+		qreal dx = vec.x();
+		qreal dy = vec.y();
+		double l = 2.0 * (dx * dx + dy * dy);
+		if (l > 0) {
+			xvel += (dx * 150.0) / l;
+			yvel += (dy * 150.0) / l;
+		}
+	}
+	//! [3]
 
-//! [4]
-    // Now subtract all forces pulling items together
+	//! [4]
+	// Now subtract all forces pulling items together
 	double weight = (edgeList.size() + 1) * 1000;
-    foreach (Edge *edge, edgeList) {
-        QPointF vec;
-        if (edge->sourceNode() == this)
-            vec = mapToItem(edge->destNode(), 0, 0);
-        else
-            vec = mapToItem(edge->sourceNode(), 0, 0);
-        xvel -= vec.x() / weight;
-        yvel -= vec.y() / weight;
-    }
-//! [4]
+	foreach (Edge *edge, edgeList) {
+		QPointF vec;
+		if (edge->sourceNode() == this)
+			vec = mapToItem(edge->destNode(), 0, 0);
+		else
+			vec = mapToItem(edge->sourceNode(), 0, 0);
+		xvel -= vec.x() / weight;
+		yvel -= vec.y() / weight;
+	}
+	//! [4]
 
-//! [5]
-    if (qAbs(xvel) < 0.1 && qAbs(yvel) < 0.1)
-        xvel = yvel = 0;
-//! [5]
+	//! [5]
+	if (qAbs(xvel) < 0.1 && qAbs(yvel) < 0.1)
+		xvel = yvel = 0;
+	//! [5]
 
-//! [6]
-    QRectF sceneRect = scene()->sceneRect();
-    newPos = pos() + QPointF(xvel, yvel);
-    newPos.setX(qMin(qMax(newPos.x(), sceneRect.left() + 10), sceneRect.right() - 10));
-    newPos.setY(qMin(qMax(newPos.y(), sceneRect.top() + 10), sceneRect.bottom() - 10));
+	//! [6]
+	QRectF sceneRect = scene()->sceneRect();
+	newPos = pos() + QPointF(xvel, yvel);
+	newPos.setX(qMin(qMax(newPos.x(), sceneRect.left() + 10), sceneRect.right() - 10));
+	newPos.setY(qMin(qMax(newPos.y(), sceneRect.top() + 10), sceneRect.bottom() - 10));
 }
 //! [6]
 
 //! [7]
 bool Node::advance()
 {
-    if (newPos == pos())
-        return false;
+	if (newPos == pos())
+		return false;
 
-    setPos(newPos);
-    return true;
+	setPos(newPos);
+	return true;
 }
 //! [7]
 
 //! [8]
 QRectF Node::boundingRect() const
 {
-    qreal adjust = 2;
+	qreal adjust = 2;
 	return QRectF( -50 - adjust, -50 - adjust, 103 + adjust, 103 + adjust);
 }
 //! [8]
@@ -173,30 +189,30 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 //! [11]
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    switch (change) {
-    case ItemPositionHasChanged:
-        foreach (Edge *edge, edgeList)
-            edge->adjust();
-        graph->itemMoved();
-        break;
-    default:
-        break;
-    };
+	switch (change) {
+	case ItemPositionHasChanged:
+		foreach (Edge *edge, edgeList)
+			edge->adjust();
+		graph->itemMoved();
+		break;
+	default:
+		break;
+	};
 
-    return QGraphicsItem::itemChange(change, value);
+	return QGraphicsItem::itemChange(change, value);
 }
 //! [11]
 
 //! [12]
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    update();
-    QGraphicsItem::mousePressEvent(event);
+	update();
+	QGraphicsItem::mousePressEvent(event);
 }
 
 void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    update();
-    QGraphicsItem::mouseReleaseEvent(event);
+	update();
+	QGraphicsItem::mouseReleaseEvent(event);
 }
 //! [12]

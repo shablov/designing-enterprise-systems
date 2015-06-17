@@ -34,15 +34,16 @@ BlockContextMenu::BlockContextMenu(BlockItem* blockItem,QWidget *parent) : QWidg
 		QHBoxLayout *hlayout = new QHBoxLayout;
 		QPushButton *button = new QPushButton();
 		button->setProperty("action", j);
-		button->setText(tr("Удалить"));
-//		button->setIcon(QIcon(":source/cross.png")); //ToDo: картинку сделать
-//		{
-//			button->setAutoFillBackground(true);
-//			QPalette palette = button->palette();
-//			palette.setColor(QPalette::Window, QColor(Qt::red));
-//			button->setPalette(palette);
-
-//		}
+		//button->setMaximumWidth(button->he()) ;
+//		button->setText(tr("Удалить"));
+		button->setIcon(QIcon(":/img/source/cross.png")); //ToDo: ширину поправить
+		{
+			button->setAutoFillBackground(true);
+			QPalette palette = button->palette();
+			palette.setColor(QPalette::Window, QColor(Qt::red));
+			button->setPalette(palette);
+			button->setFixedWidth(32);
+		}
 
 
 
@@ -84,14 +85,14 @@ void BlockContextMenu::addToRemove()
 	QPushButton * button =(QPushButton *) sender();
 	QList<BlockItem*> list = pBlockItem->reference();
 	lToRemove.append(list[button->property("action").toInt()]);
-	button->setText(tr("Удалено"));
-//	button->setIcon(QIcon("source/crossBlack.png"));
-//	{
-////		button->setAutoFillBackground(true);
-////		QPalette palette = button->palette();
-////		palette.setColor(QPalette::Window, QColor(Qt::black));
-////		button->setPalette(palette);
-//	}
+	//button->setText(tr("Удалено"));
+	button->setIcon(QIcon(":/img/source/crossBlack.png"));
+	{
+		button->setAutoFillBackground(true);
+		QPalette palette = button->palette();
+		palette.setColor(QPalette::Window, QColor(Qt::black));
+		button->setPalette(palette);
+	}
 }
 BlockContextMenu::~BlockContextMenu()
 {

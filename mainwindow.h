@@ -42,6 +42,7 @@ private slots:
 	void viewData();
 	void viewProcess();
 	void saveFile();
+	void saveFileAs();
 	void ViewBracketData();
 	void ViewCoefficientsData();
 	void ViewBracketProces();
@@ -66,6 +67,8 @@ private:
 
 	QLineEdit *processEdit;
 	QLineEdit *dataEdit;
+
+	QString path;
 
 
 };

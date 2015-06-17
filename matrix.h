@@ -12,6 +12,7 @@ public:
 	void fill(double data);
 
 	void setData(int col, int row, double data);
+	void PlusData(int col, int row, double data);
 	double getData(int row, int col);
 	int getRows() const;
 	int getCols() const;

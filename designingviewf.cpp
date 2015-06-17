@@ -16,10 +16,12 @@
 #include "edge.h"
 #include <math.h>
 
-DesigningViewF::DesigningViewF(MyMatrix mat, QList<BlockItem *> blockItems, QStringList list, QWidget *parent)
+DesigningViewF::DesigningViewF(const MyMatrix &mat, const QList<BlockItem *> &blockItems, const QStringList &list, QWidget *parent)
 //DesigningViewF::DesigningViewF(MyMatrix mat, QList<BlockItem *> blockItems, QWidget *parent)
 	: QWidget(parent), pListBlockItem(blockItems), timerId(0), count(0),type(noneBlock),pstringList(list)
 {
+	if(blockItems.count() > 0)
+		type = pListBlockItem.at(0)->getType();
 	setAcceptDrops(true);
 	pScene = new QGraphicsScene;
 	pScene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -34,6 +36,7 @@ DesigningViewF::DesigningViewF(MyMatrix mat, QList<BlockItem *> blockItems, QStr
 	setMinimumSize(720, 720);
 	visibleGraph(mat);
 	shuffle();
+
 }
 
 //{
@@ -81,9 +84,9 @@ void DesigningViewF::visibleGraph(MyMatrix mat)
 //	{
 		for (int i = 0; i < pstringList.count(); i++)
 		{
-			QString name = "(%1)" + pstringList.at(i);
-			name = name.arg(mat.getData(i,i));
-			Node *node = new Node(this,name,type);
+			QString name = pstringList.at(i);
+			//name = name.arg(mat.getData(i,i));
+			Node *node = new Node(this,mat.getData(i,i),name,type);
 			nodes << node;
 			scene()->addItem(node);
 		}

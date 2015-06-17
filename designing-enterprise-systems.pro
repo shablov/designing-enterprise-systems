@@ -49,3 +49,6 @@ DISTFILES += \
     source/cross.png \
     source/crossBlack.png
 
+RESOURCES += \
+    img.qrc
+

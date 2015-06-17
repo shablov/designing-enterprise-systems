@@ -4,6 +4,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QAction>
+#include <QDomNodeList>
 #include <QtXml/QDomDocument>
 #include <QFile>
 #include <QTextStream>
@@ -11,8 +12,9 @@
 #include "designingviewf.h"
 #include "frequencywindow.h"
 #include "windowsbracketrecording.h"
+#include "QFileDialog"
 MainWindow::MainWindow(QWidget *parent)
-	: QMainWindow(parent)
+	: QMainWindow(parent),path("save.xml")
 {
 	setWindowTitle(tr("Designing enterprise systems"));
 	setGeometry(100,100,720,720);
@@ -47,6 +49,7 @@ void MainWindow::createAction()
 	connect(pViewProcess,SIGNAL(triggered()),this,SLOT(viewProcess()));
 	connect(pViewData,SIGNAL(triggered()),this,SLOT(viewData()));
 	connect(pSaveFile,SIGNAL(triggered()),this,SLOT(saveFile()));
+	connect(pSaveFileAs,SIGNAL(triggered()),this,SLOT(saveFileAs()));
 	connect(pViewBracketData,SIGNAL(triggered()),this,SLOT(ViewBracketData()));
 	connect(pViewCoefficientsData,SIGNAL(triggered()),this,SLOT(ViewCoefficientsData()));
 	connect(pViewBracketProces,SIGNAL(triggered()),this,SLOT(ViewBracketProces()));
@@ -80,7 +83,7 @@ void MainWindow::createFileMenu()
 void MainWindow::createProcesMenu()
 {
 	QMenu *procesMenu = new QMenu(tr("Процессы"));
-	procesMenu->addAction(tr("Настройки"),this,SLOT(AddFrequencyData()));
+	procesMenu->addAction(tr("Настройки"),this,SLOT(AddFrequencyProcess()));
 	procesMenu->addAction(pViewProcess);
 	procesMenu->addAction(pViewBracketProces);
 	procesMenu->addAction(pViewCoefficientsProces);
@@ -139,6 +142,56 @@ void MainWindow::newProject()
 
 void MainWindow::onOpenFile()
 {
+
+	QStringList files = QFileDialog::getOpenFileNames(
+				this,
+				"Select one file",
+				"",
+				"xml (*.xml)");
+	//	//bool load(const QString &fileName)
+	//	{
+	//	//	QString fileName = "text.xml";
+	//		QFile file(fileName);
+	//		if (!file.open(QIODevice::ReadOnly))
+	//		{
+	////			emit error(FileOpenedError, file.errorString());
+	////			return false;
+	//		}
+	//		QByteArray data = file.readAll();
+	//		file.close();
+
+	//		QDomDocument doc("scene");
+	//		if (!doc.setContent(data))
+	//		{
+	//	//		return false;
+	//		}
+
+	//		QDomElement rootElement = doc.documentElement();
+	//		QDomNodeList processNodes = rootElement.childNodes();
+	//		for (int i = 0; i < processNodes.count(); i++)
+	//		{
+	//			QDomNode processDomNode = processNodes.at(i);
+
+	//			QDomElement processDomElement = processDomNode.toElement();
+	//			processDomElement.tagName();
+	//			QString id = processDomElement.attribute("ID", QString());
+	//			QString name = processDomElement.attribute("Name", QString());
+	//			QString frequency = processDomElement.attribute("Frequency", QString());
+	//			QString x = processDomElement.attribute("x", QString());
+	//			QString y = processDomElement.attribute("y", QString());
+	//			QList<QString> referencesId;
+	//			QDomNodeList referenceNodes = processDomElement.childNodes();
+	//			for (int i = 0; i < referenceNodes.count(); i++)
+	//			{
+	//				QDomNode referenceDomNode = referenceNodes.at(i);
+	//				QDomElement referenceDomElement = referenceDomNode.toElement();
+	//				QString referenceId = referenceDomElement.attribute("id", QString());
+	//				if (!referenceId.isEmpty()) referencesId << referenceId;
+	//			}
+	//			/// Все параметры для одного процесса готовы.
+	//		}
+	//		//return true;
+	//	}
 }
 
 void MainWindow::addDataBlock()
@@ -172,34 +225,77 @@ void MainWindow::AddFrequencyData()
 
 void MainWindow::viewData()
 {
-	WindowsBracketRecording *w = new WindowsBracketRecording(dataBlock,DView);
-	w->savePublic(false);
-
 	math m;
-	DesigningViewF* d = new DesigningViewF(m.convertFromList(DView->getListData(),DView->getListProces(),DView->getTreeData()),
-											DView->getListData(),m.newTreeList());
-	d->setAttribute(Qt::WA_DeleteOnClose);
-	d->show();
+	WindowsBracketRecording *w = new WindowsBracketRecording(dataBlock,DView);
+	if (w->check(true))
+	{
+		MyMatrix mat = m.convertFromList(DView->getListData(),DView->getListProces(), DView->getTreeData());
+		QList<BlockItem *> listData = DView->getListData();
+		QStringList treeList = m.newTreeList();
+		DesigningViewF* d = new DesigningViewF(mat, listData, treeList);
+		myTree *tree = w->buildTree();
+		d->setAttribute(Qt::WA_DeleteOnClose);
+		d->show();
+	}else
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Обнаружены ошибки при разборе объединения,построение будет без объединения");
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setButtonText(QMessageBox::Ok,tr("Продолжить"));
+		msgBox.exec();
+
+		MyMatrix mat = m.convertFromList(DView->getListData(),DView->getListProces(),0);
+		QList<BlockItem *> listData = DView->getListData();
+		QStringList treeList = m.newTreeList();
+		DesigningViewF* d = new DesigningViewF(mat, listData, treeList);
+		myTree *tree = w->buildTree();
+		d->setAttribute(Qt::WA_DeleteOnClose);
+		d->show();
+	}
+	delete w;
 }
 void MainWindow::viewProcess()
 {
-
-	WindowsBracketRecording *w = new WindowsBracketRecording(processBlock,DView);
-	w->savePublic(false);
-
-
 	math m;
-	DesigningViewF* d = new DesigningViewF(m.convertFromList(DView->getListProces(),DView->getListData(),DView->getTreeProcess()),
-												DView->getListProces(),m.newTreeList());
+	WindowsBracketRecording *w = new WindowsBracketRecording(processBlock,DView);
 
-	d->setAttribute(Qt::WA_DeleteOnClose);
-	d->show();
+
+
+	if (w->check(true))
+	{
+		MyMatrix mat = m.convertFromList(DView->getListProces(),DView->getListData(), DView->getTreeProcess());
+		QList<BlockItem *> listProcess = DView->getListProces();
+
+		QStringList treeList = m.newTreeList();
+
+
+		DesigningViewF* d = new DesigningViewF(mat, listProcess, treeList);
+		myTree *tree = w->buildTree();
+		d->setAttribute(Qt::WA_DeleteOnClose);
+		d->show();
+	}else
+	{
+
+		QMessageBox msgBox;
+		msgBox.setText("Обнаружены ошибки при разборе объединения,построение будет без объединения");
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setButtonText(QMessageBox::Ok,tr("Продолжить"));
+		msgBox.exec();
+
+		MyMatrix mat = m.convertFromList(DView->getListProces(),DView->getListData(),0);
+		QList<BlockItem *> listProcess = DView->getListProces();
+		QStringList treeList = m.newTreeList();
+		DesigningViewF* d = new DesigningViewF(mat, listProcess, treeList);
+		myTree *tree = w->buildTree();
+		d->setAttribute(Qt::WA_DeleteOnClose);
+		d->show();
+	}
+	delete w;
 }
 
 void MainWindow::saveFile()
-{
-
-	QFile file("c:/text.xml");
+{	
+	QFile file(path);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		//	exit();
@@ -256,6 +352,15 @@ void MainWindow::saveFile()
 
 }
 
+void MainWindow::saveFileAs()
+{
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+													"save.xml",
+													tr("Images (*.xml)"));
+	path = fileName;
+	saveFile();
+}
+
 void MainWindow::ViewBracketData()
 {
 	QString *str = new QString;
@@ -270,12 +375,24 @@ void MainWindow::ViewCoefficientsData()
 	QTextEdit *text = new QTextEdit;
 
 	WindowsBracketRecording *w = new WindowsBracketRecording(dataBlock,DView);
-	w->savePublic(false);
-
-	text->setText(m.coefficients(m.convertFromList(DView->getListData(),DView->getListProces(),DView->getTreeData())));
-	//text->setAttribute(Qt::WA_DeleteOnClose);
-	text->setText(text->toPlainText() + "\n Объединение:\n" + DView->getTreeData()->MyName);
-	text->show();
+	myTree *tree = w->buildTree();
+	if (w->check(true))
+	{
+		text->setText( m.coefficients(m.convertFromList(DView->getListData(),DView->getListProces(),tree)) +
+				"Объединение:\n" + (tree?tree->MyName:"0"));
+		text->show();
+	}else
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Обнаружены ошибки при разборе объединения, коэффиценты будут посчитаны без объединения" );
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setButtonText(QMessageBox::Ok,tr("Продолжить"));
+		msgBox.exec();
+		text->setText(m.coefficients(m.convertFromList(DView->getListData(),DView->getListProces(),0)) +
+				"Объединение:\n" + "0");
+		text->show();
+	}
+	delete w;
 }
 
 void MainWindow::ViewBracketProces()
@@ -292,10 +409,22 @@ void MainWindow::ViewCoefficientsProces()
 	QTextEdit *text = new QTextEdit;
 
 	WindowsBracketRecording *w = new WindowsBracketRecording(processBlock,DView);
-	w->savePublic(false);
-
-	text->setText(m.coefficients(m.convertFromList(DView->getListProces(),DView->getListData(),DView->getTreeProcess())));
-	//text->setAttribute(Qt::WA_DeleteOnClose);
-	text->setText(text->toPlainText() + "\nОбъединение:\n" + DView->getTreeProcess()->MyName);
-	text->show();
+	myTree *tree = w->buildTree();
+	if (w->check(true))
+	{
+		text->setText(m.coefficients(m.convertFromList(DView->getListProces(),DView->getListData(),tree))+
+				"Объединение:\n" + (tree?tree->MyName:"0"));
+		text->show();
+	}else
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Обнаружены ошибки при разборе объединения, коэффиценты будут посчитаны без объединения" );
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setButtonText(QMessageBox::Ok,tr("Продолжить"));
+		msgBox.exec();
+		text->setText(m.coefficients(m.convertFromList(DView->getListProces(),DView->getListData(),0)) +
+					"Объединение:\n" + "0");
+		text->show();
+	}
+	delete w;
 }

@@ -9,7 +9,7 @@ FrequencyWindow::FrequencyWindow(QList<BlockItem *> listRect, QWidget *parent) :
 	listBlock = listRect;
 
 	//listRect[0]->setFrequencyOfActivation(1.23);
-	listBlock.at(0)->setFrequencyOfActivation(1.56);
+
 	QPushButton *bOk= new QPushButton(tr("Сохранить"),this);
 	QPushButton *bCansel = new QPushButton(tr("Отмена"),this);
 	QGridLayout *layout = new QGridLayout;
@@ -57,7 +57,7 @@ FrequencyWindow::~FrequencyWindow()
 
 
 
-FrequencyWindow::save()
+void FrequencyWindow::save()
 {
 	for(int i =0;i<listBlock.count();i++)
 	{

@@ -12,7 +12,7 @@ public:
 	~FrequencyWindow();
 
 private slots:
-	save();
+    void save();
 private:
 	QList<BlockItem *>  listBlock;
 	QList<QDoubleSpinBox *> listSpin;

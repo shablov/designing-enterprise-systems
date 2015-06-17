@@ -90,10 +90,9 @@ MyMatrix math::convertFromList(QList<BlockItem *> listData, QList<BlockItem *> l
 	qDebug()<<"S";
 	matS.display();
 
-
 	matrix = matS;
-
 	calc();
+
 
 	return matrix;
 }
@@ -145,9 +144,6 @@ void math::calc()
 	}
 
 }
-
-
-
 
 void math::calc(QList<BlockItem *> listData, QList<BlockItem *> listProces, const int aX, const int aY)
 {
@@ -201,25 +197,25 @@ void math::unionMatrix(QList<myTree *> tree)
 		{
 			if(tree.indexOf(listTree.at(j)) != -1 and tree.indexOf(listTree.at(i)) != -1)
 			{
-				newMat.setData(newTreeList.count() - 1,newTreeList.count()-1,matrix.getData(j,i)/tree.count()/tree.count());
-				qDebug()<<newTreeList.count() - 1<<" "<<newTreeList.count()-1<<matrix.getData(j,i)/tree.count()/tree.count();
+				newMat.PlusData(newTreeList.count() - 1,newTreeList.count()-1,matrix.getData(j,i)/tree.count()/tree.count());
+				qDebug()<<"\n0 "<<newTreeList.count() - 1<<" "<<newTreeList.count()-1<<matrix.getData(j,i)/tree.count()/tree.count();
 
 			}
 			else if(tree.indexOf(listTree.at(j)) == -1 and tree.indexOf(listTree.at(i)) == -1)
 			{
-				newMat.setData(newTreeList.indexOf(listTree.at(j)),newTreeList.indexOf(listTree.at(i)),matrix.getData(j,i));
-				qDebug()<<newTreeList.indexOf(listTree.at(j))<<" "<<newTreeList.indexOf(listTree.at(i))<<matrix.getData(j,i);
+				newMat.PlusData(newTreeList.indexOf(listTree.at(j)),newTreeList.indexOf(listTree.at(i)),matrix.getData(j,i));
+				qDebug()<<"\n1 "<<newTreeList.indexOf(listTree.at(j))<<" "<<newTreeList.indexOf(listTree.at(i))<<matrix.getData(j,i);
 			}
 			else if (tree.indexOf(listTree.at(j)) == -1 and tree.indexOf(listTree.at(i)) != -1)
 			{
-				newMat.setData(newTreeList.indexOf(listTree.at(j)),newTreeList.count()-1,matrix.getData(j,i)/tree.count());
-				qDebug()<<newTreeList.indexOf(listTree.at(j))<<" "<<newTreeList.count()-1<<matrix.getData(j,i);
+				newMat.PlusData(newTreeList.indexOf(listTree.at(j)),newTreeList.count()-1,matrix.getData(j,i)/tree.count());
+				qDebug()<<"\n2 "<<newTreeList.indexOf(listTree.at(j))<<" "<<newTreeList.count()-1<<matrix.getData(j,i);
 
 			}
 			else
 			{
-				newMat.setData(newTreeList.count()-1,newTreeList.indexOf(listTree.at(i)),matrix.getData(j,i)/tree.count());
-				 qDebug()<<newTreeList.count()-1<<newTreeList.indexOf(listTree.at(i))<<" "<<matrix.getData(j,i);
+				newMat.PlusData(newTreeList.count()-1,newTreeList.indexOf(listTree.at(i)),matrix.getData(j,i)/tree.count());
+				 qDebug()<<"\n3 "<<newTreeList.count()-1<<newTreeList.indexOf(listTree.at(i))<<" "<<matrix.getData(j,i);
 			}
 
 			qDebug()<<"matixA";
@@ -234,16 +230,18 @@ void math::unionMatrix(QList<myTree *> tree)
 	matrix = newMat;
 	qDebug()<<"matix";
 	matrix.display();
-
 }
 
 QStringList math::newTreeList()
 {
-	QStringList list;
+
+	QStringList result;
 	for (int i = 0;i< listTree.count();i++)
 	{
-		list.append(listTree.at(i)->MyName);
+		result.append(listTree.at(i)->MyName);
 	}
+	if (result.count() != 0) return result;
+	return list;
 }
 
 
@@ -260,7 +258,7 @@ QStringList math::newTreeList()
 //	{
 //		myTree *tree = new myTree;
 //		tree->MyName += checklist.at(i);
-//		pTree->MyName += tree->MyName + ",";
+//		pTree->MyName += tree->MyName + ", ";
 //		pTree->child.append(tree);
 //	}
 //	pTree->MyName =  "(" + pTree->MyName.left(pTree->MyName.count() - 1) + ")";
