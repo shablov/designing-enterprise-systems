@@ -240,8 +240,12 @@ QStringList math::newTreeList()
 	{
 		result.append(listTree.at(i)->MyName);
 	}
+<<<<<<< HEAD
 	if (result.count() != 0) return result;
 	return list;
+=======
+    return list;
+>>>>>>> origin/master
 }
 
 
