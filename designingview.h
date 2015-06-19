@@ -40,7 +40,7 @@ public:
 
 	myTree *getTreeProcess() const;
 	void setTreeProcess(myTree *value);
-	void addLinePaint(BlockItem *bi1,BlockItem *bi2);
+
 public slots:
 	void zoomOut();
 	void zoomIn();
