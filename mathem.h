@@ -14,6 +14,9 @@ public:
 	QString coefficients(MyMatrix matrix);
 	QStringList newTreeList();
 	MyMatrix convertFromList(QList<BlockItem *> pListData,QList<BlockItem *> pListProces,myTree *tree = 0);
+	QString getVichisleniya() const;
+	void setVichisleniya(const QString &value);
+
 private:
 	bool checkReturnName(myTree *tree);
 	void calc();
@@ -22,12 +25,15 @@ private:
 	void calc(QList<BlockItem *> listData, QList<BlockItem *> listProces, const int aX, const int aY);
 	void setListTree(myTree* tree);
 	void unionMatrix(QList<myTree*> tree);
+	void SaveResultInStr(QString str, MyMatrix m);
+	void SaveResultInStr(QString str, MyMatrix m,QList<myTree *> list);
 
 	QStringList list;
 	QStringList checklist;
 	QList<myTree *> listTree;
 	myTree *pTree;
 	MyMatrix matrix;
+	QString Vichisleniya;
 
 };
 

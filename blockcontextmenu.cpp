@@ -25,7 +25,7 @@ BlockContextMenu::BlockContextMenu(BlockItem* blockItem,QWidget *parent) : QWidg
 	{
 		++i;
 		layout->addWidget(sbFrequency,i,0,1,2);
-	}else sbFrequency->setVisible(false);
+	}//else sbFrequency->setVisible(false);
 
 	QList<BlockItem*> list = blockItem->reference();
 	for(int j = 0;j <list.count();j++)
