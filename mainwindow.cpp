@@ -14,7 +14,7 @@
 #include "windowsbracketrecording.h"
 #include "QFileDialog"
 MainWindow::MainWindow(QWidget *parent)
-	: QMainWindow(parent),path("save.xml")
+	: QMainWindow(parent)
 {
 	setWindowTitle(tr("Designing enterprise systems"));
 	setGeometry(100,100,720,720);
@@ -30,11 +30,15 @@ void MainWindow::createAction()
 	pOpenFile = new QAction(tr("Открыть"), this);
 	pOpenFile->setShortcut(QKeySequence("CTRL+O"));
 	pSaveFile = new QAction(tr("Сохранить"), this);
+
+
+//	pExit = new QAction(tr("Выход"), this);
+
 	pSaveFile->setShortcut(QKeySequence("CTRL+S"));
 	pSaveFileAs = new QAction(tr("Сохранить как..."), this);
 	pSaveFileAs->setShortcut(QKeySequence("CTRL+Shift+S"));
-	pAddDataBlock = new QAction(tr("Add data block"), this);
-	pAddProcessBlock = new QAction(tr("Add process block"), this);
+	pAddDataBlock = new QAction(tr("Добавить данные"), this);
+	pAddProcessBlock = new QAction(tr("Добавить процесс"), this);
 
 
 	pViewProcess = new QAction(tr("Просмотр"), this);
@@ -44,6 +48,7 @@ void MainWindow::createAction()
 	pViewBracketProces = new QAction(tr("Объединение"), this);
 	pViewCoefficientsProces = new QAction(tr("Коэфиценты"), this);
 
+	//connect(pExit, SIGNAL(triggered()), this, SLOT(exit()));
 	connect(pNew, SIGNAL(triggered()), this, SLOT(newProject()));
 	connect(pOpenFile, SIGNAL(triggered()), this, SLOT(onOpenFile()));
 	connect(pViewProcess,SIGNAL(triggered()),this,SLOT(viewProcess()));
@@ -54,6 +59,7 @@ void MainWindow::createAction()
 	connect(pViewCoefficientsData,SIGNAL(triggered()),this,SLOT(ViewCoefficientsData()));
 	connect(pViewBracketProces,SIGNAL(triggered()),this,SLOT(ViewBracketProces()));
 	connect(pViewCoefficientsProces,SIGNAL(triggered()),this,SLOT(ViewCoefficientsProces()));
+
 }
 
 void MainWindow::createMenuBar()
@@ -75,10 +81,10 @@ void MainWindow::createFileMenu()
 	fileMenu->addAction(pSaveFile);
 	fileMenu->addAction(pSaveFileAs);
 	fileMenu->addSeparator();
-	fileMenu->addAction(tr("Выход"), this, SLOT(close()));
+	fileMenu->addAction(tr("Выход"),this,SLOT(close()));
+	//fileMenu->addAction(pExit);
 	menuBar()->addMenu(fileMenu);
 }
-
 
 void MainWindow::createProcesMenu()
 {
@@ -112,8 +118,8 @@ void MainWindow::createCalculationMenu()
 {
 	QMenu *calculationMenu = new QMenu(tr("Calculation"));
 	//calculationMenu->addAction(tr("calc"),this,SLOT(calc()));
-	calculationMenu->addAction(tr("Setting Process"),this,SLOT(AddFrequencyProcess()));
-	calculationMenu->addAction(tr("Setting Data"),this,SLOT(AddFrequencyData()));
+	calculationMenu->addAction(tr("Настройки процессов"),this,SLOT(AddFrequencyProcess()));
+	calculationMenu->addAction(tr("Настройки данных"),this,SLOT(AddFrequencyData()));
 	calculationMenu->addAction(pViewProcess);
 	calculationMenu->addAction(pViewData);
 	calculationMenu->addAction(pViewBracketData);
@@ -136,62 +142,161 @@ void MainWindow::createCentralWidget()
 
 void MainWindow::newProject()
 {
-	delete DView;
-	createCentralWidget();
+	QMessageBox msgBox;
+	msgBox.setText("Сохранить проект?" );
+	msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+	msgBox.setButtonText(QMessageBox::Save,tr("Сохранить"));
+	msgBox.setButtonText(QMessageBox::Discard,tr("Не сохранять"));
+	msgBox.setButtonText(QMessageBox::Cancel,tr("Отмена"));
+	msgBox.setDefaultButton(QMessageBox::Save);
+
+	int ret = msgBox.exec();
+	switch (ret)
+	{
+	case QMessageBox::Save:
+		saveFile();
+		delete DView;
+		createCentralWidget();
+		path = "";
+		break;
+	case QMessageBox::Discard:
+		delete DView;
+		path = "";
+		createCentralWidget();
+		break;
+	case QMessageBox::Cancel:
+		break;
+	default:
+		break;
+	}
 }
 
 void MainWindow::onOpenFile()
 {
 
-	QStringList files = QFileDialog::getOpenFileNames(
-				this,
-				"Select one file",
-				"",
-				"xml (*.xml)");
-	//	//bool load(const QString &fileName)
-	//	{
-	//	//	QString fileName = "text.xml";
-	//		QFile file(fileName);
-	//		if (!file.open(QIODevice::ReadOnly))
-	//		{
-	////			emit error(FileOpenedError, file.errorString());
-	////			return false;
-	//		}
-	//		QByteArray data = file.readAll();
-	//		file.close();
+	QMessageBox msgBox;
+	msgBox.setText("Сохранить проект?" );
+	msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+	msgBox.setButtonText(QMessageBox::Save,tr("Сохранить"));
+	msgBox.setButtonText(QMessageBox::Discard,tr("Не сохранять"));
+	msgBox.setButtonText(QMessageBox::Cancel,tr("Отмена"));
+	msgBox.setDefaultButton(QMessageBox::Save);
 
-	//		QDomDocument doc("scene");
-	//		if (!doc.setContent(data))
-	//		{
-	//	//		return false;
-	//		}
+	int ret = msgBox.exec();
+	switch (ret)
+	{
+	case QMessageBox::Save:
+		saveFile();
+		delete DView;
+		path = "";
+		createCentralWidget();
+		break;
+	case QMessageBox::Discard:
+		delete DView;
+		path = "";
+		createCentralWidget();
+		break;
+	case QMessageBox::Cancel:
+		return;
+		break;
+	default:
+		return;
+		break;
+	}
 
-	//		QDomElement rootElement = doc.documentElement();
-	//		QDomNodeList processNodes = rootElement.childNodes();
-	//		for (int i = 0; i < processNodes.count(); i++)
-	//		{
-	//			QDomNode processDomNode = processNodes.at(i);
 
-	//			QDomElement processDomElement = processDomNode.toElement();
-	//			processDomElement.tagName();
-	//			QString id = processDomElement.attribute("ID", QString());
-	//			QString name = processDomElement.attribute("Name", QString());
-	//			QString frequency = processDomElement.attribute("Frequency", QString());
-	//			QString x = processDomElement.attribute("x", QString());
-	//			QString y = processDomElement.attribute("y", QString());
-	//			QList<QString> referencesId;
-	//			QDomNodeList referenceNodes = processDomElement.childNodes();
-	//			for (int i = 0; i < referenceNodes.count(); i++)
-	//			{
-	//				QDomNode referenceDomNode = referenceNodes.at(i);
-	//				QDomElement referenceDomElement = referenceDomNode.toElement();
-	//				QString referenceId = referenceDomElement.attribute("id", QString());
-	//				if (!referenceId.isEmpty()) referencesId << referenceId;
-	//			}
-	//			/// Все параметры для одного процесса готовы.
-	//		}
-	//		//return true;
-	//	}
+
+	path = QFileDialog::getOpenFileName(this,
+										"Select file",
+										"",
+										"xml (*.xml)");
+	//bool load(const QString &fileName)
+
+	//	QString fileName = "text.xml";
+	QFile file(path);
+
+	if (!file.open(QIODevice::ReadOnly))
+	{
+		//			emit error(FileOpenedError, file.errorString());
+		//			return false;
+	}
+	QByteArray data = file.readAll();
+
+
+	file.close();
+
+	QDomDocument doc("scene");
+	if (!doc.setContent(data))
+	{
+		//		return false;
+	}
+	QList <ReadFile> readFile;
+	QDomElement rootElement = doc.documentElement();
+	QDomNodeList processNodes = rootElement.childNodes();
+	for (int i = 0; i < processNodes.count(); i++)
+	{
+		QDomNode processDomNode = processNodes.at(i);
+		QDomElement processDomElement = processDomNode.toElement();
+		bool b = false;
+
+		BlockItem *bi;
+		double  x  = processDomElement.attribute("x",QString()).toDouble();
+		double  y  = processDomElement.attribute("y",QString()).toDouble();
+
+		QString typeBlock = processDomElement.tagName();
+		if (typeBlock == "Process")
+		{
+			DView->addBlock(processBlock,QPoint(x,y));
+			bi = DView->getListProces().back();
+			b = true;
+		}
+		else if (typeBlock == "Data")
+		{
+			DView->addBlock(dataBlock,QPoint(x,y));
+			bi = DView->getListData().back();
+			b = true;
+		}
+		else if (typeBlock == "BracketProcess")
+			DView->setBracketProcess( processDomElement.attribute("Text",QString()));
+		else if (typeBlock == "BracketData")
+			DView->setBracketData(processDomElement.attribute("Text",QString()));
+
+
+		if (b)
+		{
+			bi->setName(processDomElement.attribute("Name", QString()));
+			bi->setFrequencyOfActivation( processDomElement.attribute("Frequency", QString()).toDouble());
+
+			ReadFile newBlock;
+			newBlock.id = processDomElement.attribute("ID", QString());
+			newBlock.blockItem = bi;
+			QDomNodeList referenceNodes = processDomElement.childNodes();
+			for (int j = 0; j < referenceNodes.count(); j++)
+			{
+				QDomNode referenceDomNode = referenceNodes.at(j);
+				QDomElement referenceDomElement = referenceDomNode.toElement();
+				newBlock.ReferenceID.append(referenceDomElement.attribute("id", QString()));
+			}
+			readFile.append(newBlock);
+		}
+
+	}
+	for(int i = 0; i < readFile.count() -1;i++)
+	{
+		for(int j = 0; j < readFile.at(i).ReferenceID.count() ;j++)
+		{
+			for(int k = i + 1; k < readFile.count() ;k++)
+			{
+				if (readFile.at(i).ReferenceID.at(j) == readFile.at(k).id)//&& readFile.at(i).blockItem->type() != readFile.at(k).blockItem->type())
+				{
+					DView->addLinePaint(readFile.at(i).blockItem,readFile.at(k).blockItem);
+					//break;
+				}
+			}
+		}
+	}
+	//return true;
+
 }
 
 void MainWindow::addDataBlock()
@@ -226,7 +331,7 @@ void MainWindow::AddFrequencyData()
 void MainWindow::viewData()
 {
 	math m;
-<<<<<<< HEAD
+	//<<<<<<< HEAD
 	WindowsBracketRecording *w = new WindowsBracketRecording(dataBlock,DView);
 	if (w->check(true))
 	{
@@ -254,14 +359,14 @@ void MainWindow::viewData()
 		d->show();
 	}
 	delete w;
-=======
-    MyMatrix mat = m.convertFromList(DView->getListData(),DView->getListProces(),DView->getTreeData());
-    QList<BlockItem *> listData = DView->getListData();
-    QStringList treeList = m.newTreeList();
-    DesigningViewF* d = new DesigningViewF(mat, listData, treeList);
-	d->setAttribute(Qt::WA_DeleteOnClose);
-	d->show();
->>>>>>> origin/master
+	//=======
+//	MyMatrix mat = m.convertFromList(DView->getListData(),DView->getListProces(),DView->getTreeData());
+//	QList<BlockItem *> listData = DView->getListData();
+//	QStringList treeList = m.newTreeList();
+//	DesigningViewF* d = new DesigningViewF(mat, listData, treeList);
+//	d->setAttribute(Qt::WA_DeleteOnClose);
+//	d->show();
+	//>>>>>>> origin/master
 }
 void MainWindow::viewProcess()
 {
@@ -269,14 +374,14 @@ void MainWindow::viewProcess()
 	WindowsBracketRecording *w = new WindowsBracketRecording(processBlock,DView);
 
 
-<<<<<<< HEAD
-=======
-	math m;
-    MyMatrix mat = m.convertFromList(DView->getListProces(),DView->getListData(), DView->getTreeProcess());
-    QList<BlockItem *> listData = DView->getListProces();
-    QStringList treeList = m.newTreeList();
-    DesigningViewF* d = new DesigningViewF(mat, listData, treeList);
->>>>>>> origin/master
+	//<<<<<<< HEAD
+	//=======
+
+//	MyMatrix mat = m.convertFromList(DView->getListProces(),DView->getListData(), DView->getTreeProcess());
+//	QList<BlockItem *> listData = DView->getListProces();
+//	QStringList treeList = m.newTreeList();
+//	DesigningViewF* d = new DesigningViewF(mat, listData, treeList);
+	//>>>>>>> origin/master
 
 	if (w->check(true))
 	{
@@ -292,7 +397,6 @@ void MainWindow::viewProcess()
 		d->show();
 	}else
 	{
-
 		QMessageBox msgBox;
 		msgBox.setText("Обнаружены ошибки при разборе объединения,построение будет без объединения");
 		msgBox.setStandardButtons(QMessageBox::Ok);
@@ -312,6 +416,14 @@ void MainWindow::viewProcess()
 
 void MainWindow::saveFile()
 {	
+	if (path == "")
+	{
+		saveFileAs();
+		return;
+	}
+
+
+
 	QFile file(path);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text))
 	{
@@ -358,24 +470,43 @@ void MainWindow::saveFile()
 			}
 			scene.appendChild(block);
 		}
+		QDomElement block2 = docum.createElement("BracketData");
+		block2.setAttribute("Text", DView->getBracketData());
+		scene.appendChild(block2);
+		block2 = docum.createElement("BracketProcess");
+		block2.setAttribute("Text", DView->getBracketProcess());
+		scene.appendChild(block2);
 
 		//delete Process;
 
 		docum.appendChild(scene);
+		QByteArray BArray = file.readAll();
+		BArray = docum.toByteArray();
 		QTextStream out(&file);
-		out << docum.toString();
-	}
-	//return 0;
+		out.setCodec("UTF-8");
 
+		out << BArray;
+	}else
+	{
+		QMessageBox msgBox;
+		msgBox.setText("Не удалось сохранить файл. Возможно файл открыт другой программой или защищен от записи" );
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setButtonText(QMessageBox::Ok,tr("Продолжить"));
+		msgBox.exec();
+		//return 0;
+	}
 }
 
 void MainWindow::saveFileAs()
 {
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
 													"save.xml",
-													tr("Images (*.xml)"));
-	path = fileName;
-	saveFile();
+												tr("Images (*.xml)"));
+	if (fileName!= "")
+	{
+		path = fileName;
+		saveFile();
+	}
 }
 
 void MainWindow::ViewBracketData()
@@ -396,7 +527,9 @@ void MainWindow::ViewCoefficientsData()
 	if (w->check(true))
 	{
 		text->setText( m.coefficients(m.convertFromList(DView->getListData(),DView->getListProces(),tree)) +
-				"Объединение:\n" + (tree?tree->MyName:"0"));
+					   "Объединение:\n" + (tree?tree->MyName:"0"));
+		text->setText(text->toPlainText() + "\nВычисления:\n" + m.getVichisleniya());
+
 		text->show();
 	}else
 	{
@@ -406,7 +539,9 @@ void MainWindow::ViewCoefficientsData()
 		msgBox.setButtonText(QMessageBox::Ok,tr("Продолжить"));
 		msgBox.exec();
 		text->setText(m.coefficients(m.convertFromList(DView->getListData(),DView->getListProces(),0)) +
-				"Объединение:\n" + "0");
+					  "Объединение:\n" + "0");
+		text->setText(text->toPlainText() + "\nВычисления:\n" + m.getVichisleniya());
+
 		text->show();
 	}
 	delete w;
@@ -430,7 +565,10 @@ void MainWindow::ViewCoefficientsProces()
 	if (w->check(true))
 	{
 		text->setText(m.coefficients(m.convertFromList(DView->getListProces(),DView->getListData(),tree))+
-				"Объединение:\n" + (tree?tree->MyName:"0"));
+					  "Объединение:\n" + (tree?tree->MyName:"0"));
+		text->setText(text->toPlainText() + "\nВычисления:\n" + m.getVichisleniya());
+
+
 		text->show();
 	}else
 	{
@@ -440,8 +578,53 @@ void MainWindow::ViewCoefficientsProces()
 		msgBox.setButtonText(QMessageBox::Ok,tr("Продолжить"));
 		msgBox.exec();
 		text->setText(m.coefficients(m.convertFromList(DView->getListProces(),DView->getListData(),0)) +
-					"Объединение:\n" + "0");
+					  "Объединение:\n" + "0");
+		text->setText(text->toPlainText() + "\nВычисления:\n" + m.getVichisleniya());
+
 		text->show();
 	}
 	delete w;
+}
+
+void MainWindow::myExit()
+{
+	SaveMsg();
+	close();
+}
+
+//void MainWindow::exit()
+//{
+//
+//}
+
+void MainWindow::SaveMsg()
+{
+	QMessageBox msgBox;
+	msgBox.setText("Сохранить проект?" );
+	msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+	msgBox.setButtonText(QMessageBox::Save,tr("Сохранить"));
+	msgBox.setButtonText(QMessageBox::Discard,tr("Не сохранять"));
+	msgBox.setButtonText(QMessageBox::Cancel,tr("Отмена"));
+	msgBox.setDefaultButton(QMessageBox::Save);
+
+	int ret = msgBox.exec();
+	switch (ret)
+	{
+	case QMessageBox::Save:
+		saveFile();
+		delete DView;
+		path = "";
+		createCentralWidget();
+		break;
+	case QMessageBox::Discard:
+		delete DView;
+		path = "";
+		createCentralWidget();
+		break;
+	case QMessageBox::Cancel:
+		break;
+	default:
+		break;
+	}
+
 }

@@ -7,6 +7,14 @@
 
 class QAction;
 
+struct ReadFile
+{
+	QString id;
+	BlockItem *blockItem;
+	QStringList ReferenceID;
+};
+
+
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -47,7 +55,9 @@ private slots:
 	void ViewCoefficientsData();
 	void ViewBracketProces();
 	void ViewCoefficientsProces();
+	void myExit();
 private:
+	void SaveMsg();
 	DesigningView *DView;
 
 	QAction *pOpenFile;
@@ -64,6 +74,7 @@ private:
 	QAction *pViewBracketProces;
 	QAction *pViewCoefficientsProces;
 	QAction *pNew;
+	//QAction *pExit;
 
 	QLineEdit *processEdit;
 	QLineEdit *dataEdit;

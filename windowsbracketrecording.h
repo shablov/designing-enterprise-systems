@@ -66,7 +66,7 @@ private slots:
 
 private:
 	void saveResult(bool saveTree = false);
-
+	myTree* checkComma(QString str);
     //QString checkTheSameName(QList<BlockItem *> list);
     //bool correct();
     //bool checkCorrectName(QString str);
