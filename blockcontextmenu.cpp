@@ -9,10 +9,10 @@
 #include <QDoubleSpinBox>
 BlockContextMenu::BlockContextMenu(BlockItem* blockItem,QWidget *parent) : QWidget(parent),pBlockItem(blockItem)
 {
-	QPushButton *bOk= new QPushButton(tr("Сохранить"),this);
-	QPushButton *bCansel = new QPushButton(tr("Отмена"),this);
-	leName = new QLineEdit(blockItem->getName(),this);
-	sbFrequency = new QDoubleSpinBox(this);
+    QPushButton *bOk= new QPushButton(tr("Сохранить"));
+    QPushButton *bCansel = new QPushButton(tr("Отмена"));
+    leName = new QLineEdit(blockItem->getName());
+    sbFrequency = new QDoubleSpinBox();
 	sbFrequency->setValue(blockItem->getFrequencyOfActivation());
 	sbFrequency->setMinimum(0.01);
 	sbFrequency->setSingleStep(0.01);
@@ -21,11 +21,11 @@ BlockContextMenu::BlockContextMenu(BlockItem* blockItem,QWidget *parent) : QWidg
 
 	int i = 0;
 	layout->addWidget(leName,i,0,1,2);
-	if (blockItem->getType() == processBlock)
+    //if (blockItem->getType() == processBlock)
 	{
 		++i;
 		layout->addWidget(sbFrequency,i,0,1,2);
-	}else sbFrequency->setVisible(false);
+	}//else sbFrequency->setVisible(false);
 
 	QList<BlockItem*> list = blockItem->reference();
 	for(int j = 0;j <list.count();j++)
@@ -77,7 +77,7 @@ void BlockContextMenu::reNameBlock()
 	foreach (BlockItem * bi,lToRemove)
 			pBlockItem->removeReferenceAndLine(bi);
 
-	this->close();
+    close();
 }
 
 void BlockContextMenu::addToRemove()
