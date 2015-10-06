@@ -54,7 +54,7 @@ MyMatrix math::convertFromList(QList<BlockItem *> listData, QList<BlockItem *> l
 	//qDebug()<<"!!!";
 	//MatB
 	//QList<BlockItem*> listData,listProces;
-	Vichisleniya = "";
+
 
 	MyMatrix matB(listData.count(),listProces.count()) ; //= new QGenericMatrix<listData.count(),listProces.count(),int>;
 	MyMatrix matFp(1,listProces.count());
@@ -66,12 +66,10 @@ MyMatrix math::convertFromList(QList<BlockItem *> listData, QList<BlockItem *> l
 	for(int j = 0;j<listProces.count();j++)
 		for(int i = 0; i <listData.count(); i++)
 			matB.setData(i,j,listProces.at(j)->isReference(listData.at(i)));
-	SaveResultInStr("B",matB);
 	//qDebug()<<"B";
 	matB.display();
 	for(int i = 0; i < listProces.count(); i++)
 		matFp.setData(0,i, listProces[i]->getFrequencyOfActivation());
-	SaveResultInStr("Fp",matFp);
 	//qDebug()<<"Fp";
 	matFp.display();
 
@@ -87,10 +85,12 @@ MyMatrix math::convertFromList(QList<BlockItem *> listData, QList<BlockItem *> l
 
 	MyMatrix matAf = MyMatrix::multi(matBuff,matBuff2);
 	//qDebug()<<"Af";
-	SaveResultInStr("Af",matAf);
 	matAf.display();
 	MyMatrix matS = MyMatrix::RelativeFrequency(matAf);
+<<<<<<< HEAD
     SaveResultInStr("S:",matS,&list);
+=======
+>>>>>>> parent of 25442fc... release
 	qDebug()<<"S";
 	matS.display();
 
@@ -156,6 +156,8 @@ void math::calc(QList<BlockItem *> listData, QList<BlockItem *> listProces, cons
 
 void math::setListTree(myTree *tree)
 {
+
+
 	if (tree->child.count()!= 0)
 	{
 		for(int i = 0;i<tree->child.count();i++)
@@ -223,10 +225,15 @@ void math::unionMatrix(QList<myTree *> tree)
 			}
 			else
 			{
+<<<<<<< HEAD
                 newMat.PlusData(newTreeList.count()-1,newTreeList.indexOf(listTree.at(i)),matrix.getData(j,i));
 				qDebug()<<"\n3 "<<newTreeList.count()-1<<newTreeList.indexOf(listTree.at(i))<<" "<<matrix.getData(j,i);
                 if(matrix.getData(j,i) != 0)
                     matNumberNotNull.PlusData(newTreeList.count()-1,newTreeList.indexOf(listTree.at(i)),1);
+=======
+				newMat.PlusData(newTreeList.count()-1,newTreeList.indexOf(listTree.at(i)),matrix.getData(j,i)/tree.count());
+				 qDebug()<<"\n3 "<<newTreeList.count()-1<<newTreeList.indexOf(listTree.at(i))<<" "<<matrix.getData(j,i);
+>>>>>>> parent of 25442fc... release
 			}
 
 			qDebug()<<"matixA";
@@ -254,6 +261,7 @@ void math::unionMatrix(QList<myTree *> tree)
 	matrix = newMat;
 	qDebug()<<"matix";
 	matrix.display();
+<<<<<<< HEAD
 
 
 	SaveResultInStr("Объединение:",matrix,listTree);
@@ -318,6 +326,9 @@ void math::SaveResultInStr( QString str,MyMatrix m)
 }
 
 
+=======
+}
+>>>>>>> parent of 25442fc... release
 
 QStringList math::newTreeList()
 {
@@ -327,12 +338,12 @@ QStringList math::newTreeList()
 	{
 		result.append(listTree.at(i)->MyName);
 	}
-	//<<<<<<< HEAD
+<<<<<<< HEAD
 	if (result.count() != 0) return result;
 	return list;
-	//=======
-	//   return list;
-	//>>>>>>> origin/master
+=======
+    return list;
+>>>>>>> origin/master
 }
 
 
