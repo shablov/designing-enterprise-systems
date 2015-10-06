@@ -37,7 +37,7 @@ DesigningView::DesigningView(QWidget *parent) : QWidget(parent),treeData(0),tree
 	pGraphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 	pGraphicsView->scale(qreal(0.8), qreal(0.8));
 
-	startFunc();
+	//startFunc();
 }
 
 DesigningView::~DesigningView()
@@ -46,11 +46,11 @@ DesigningView::~DesigningView()
 }
 void DesigningView::createAction()
 {
-	pAddRelation = new QAction(tr("Add relations"), this);
-	pAddProcessBlock = new QAction(tr("Add process block"),this);
-	pAddDataBlock = new QAction(tr("Add data block"),this);
-	pDeleteBlock = new QAction(tr("Delete block"),this);
-	pSettings =  new QAction(tr("Settings"),this);
+	pAddRelation = new QAction(tr("Добавить связь"), this);
+	pAddProcessBlock = new QAction(tr("Добавить процесс"),this);
+	pAddDataBlock = new QAction(tr("Добавить данные"),this);
+	pDeleteBlock = new QAction(tr("Удалить"),this);
+	pSettings =  new QAction(tr("Настройки"),this);
 	//pLineDel =  new QAction(tr("Delete line"),this);
 
 	connect(pAddRelation, SIGNAL(triggered()), this, SLOT(addRelation()));
@@ -78,6 +78,11 @@ myTree *DesigningView::getTreeProcess() const
 void DesigningView::setTreeProcess(myTree *value)
 {
 	treeProcess = value;
+}
+
+void DesigningView::addLinePaint(BlockItem *bi1, BlockItem *bi2)
+{
+	pGraphicsView->addLinePaint(bi1,bi2);
 }
 
 myTree *DesigningView::getTreeData() const
@@ -170,6 +175,7 @@ void DesigningView::addBlock(BlockType type, QPoint point)
 bool DesigningView::eventFilter(QObject *target, QEvent *event)
 {
 	QWidget::eventFilter(target,event);
+    return false;
 }
 
 BlockItem *DesigningView::refOnBlockItem(QPoint point)

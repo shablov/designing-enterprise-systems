@@ -13,7 +13,7 @@ GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
 
 GraphicsView::~GraphicsView()
 {
-	
+
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent * event)
@@ -92,7 +92,7 @@ void GraphicsView::endLinePaint(QPoint point)
 	if (!bi1) bi1 = qgraphicsitem_cast<BlockItem *>(itemAt(mapFromScene(pLineItem->line().p1()))->parentItem());
 	if (!bi2) bi2 = qgraphicsitem_cast<BlockItem *>(itemAt(point)->parentItem());
 
-	if (bi1 && bi2 and bi1 != bi2 and bi1->getType() != bi2->getType() and !bi1->isReference(bi2))
+    if (bi1 && bi2 && bi1 != bi2 && bi1->getType() != bi2->getType() && !bi1->isReference(bi2))
 	{
 		QLineF line(bi1->pos(),bi2->pos());
 		QGraphicsLineItem *lineItem = scene()->addLine(line);
@@ -113,7 +113,7 @@ void GraphicsView::addLinePaint(QGraphicsRectItem *startBI, QGraphicsRectItem *e
 	BlockItem *bi2 = qgraphicsitem_cast<BlockItem *>(endBI);
 
 
-	if (bi1 && bi2 and bi1 != bi2 and bi1->getType() != bi2->getType() and !bi1->isReference(bi2))
+    if (bi1 && bi2 && bi1 != bi2 && bi1->getType() != bi2->getType() && !bi1->isReference(bi2))
 	{
 		QLineF line(bi1->pos(),bi2->pos());
 		QGraphicsLineItem *lineItem = scene()->addLine(line);

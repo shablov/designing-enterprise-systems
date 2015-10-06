@@ -15,7 +15,7 @@ FrequencyWindow::FrequencyWindow(QList<BlockItem *> listRect, QWidget *parent) :
 	QGridLayout *layout = new QGridLayout;
 	int j = 0;
 	for (int i = 0;i <listBlock.count();++i)
-	{	
+    {
 		QDoubleSpinBox  *sb = new  QDoubleSpinBox ;
 		sb->setValue(listBlock.at(i)->getFrequencyOfActivation());
 		sb->setMinimum(0.01);

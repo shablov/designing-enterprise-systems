@@ -13,7 +13,7 @@ BlockItem::BlockItem(BlockType type, QString name ,QGraphicsItem *parent)
 
 	setFlags(QGraphicsItem::ItemIsMovable);
 	setFlags(QGraphicsItem::ItemIsFocusable);
-	setAcceptDrops(true);
+    setAcceptDrops(true);
 	textItem = new QGraphicsTextItem(this);
 	textItem->setPos(-width / 2, -height / 2);
 	textItem->setPlainText(name);
