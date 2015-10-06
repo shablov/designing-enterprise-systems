@@ -208,14 +208,6 @@ myTree *WindowsBracketRecording::buildTree(QString string)
 		tree->MyName = string;
 		return tree;
 	}
-
-
-	myTree *tree22 =  checkComma(string);
-	if (checkComma(string)) return tree22;
-
-
-
-
 	int i = string.indexOf('\"');
 	int j = string.indexOf('(');
 	if (i != -1 || j != -1)
@@ -447,54 +439,6 @@ void WindowsBracketRecording::saveResult(bool saveTree)
 		//qDebug()<<DView->getTreeData()->MyName;
 		break;
 	}
-}
-
-myTree * WindowsBracketRecording::checkComma(QString str)
-{
-	qDebug()<<"comma";
-	myTree *result = new myTree;
-
-	int pre = 0;
-	for (int i = 0;i < str.size();i++)
-	{
-
-		if (str.at(i) == '(')
-		{
-			i = doublesSign(str,i,"()") -1 ;
-			if (i ==-1) return 0;
-		}
-		if	(str.at(i) == '\"')
-		{
-			i = doublesSign(str,i,"\"") -1 ;
-			if (i ==-1) return 0;
-		}
-
-		if	(str.at(i) == ',')
-		{
-			myTree *tree = buildTree(str.mid(pre,i - pre));
-			pre = i + 1;
-			if(tree)result->child.append(tree);
-		}
-
-	}
-	if (pre!= 0 )
-	{
-		myTree *tree = buildTree(str.mid(pre, str.size()));
-		if(tree)result->child.append(tree);
-	}
-
-	if (result->child.count() == 0) return 0;
-	if (result->child.count() == 1) return result->child.at(0);
-
-
-	result->MyName = "(";
-	for(int i = 0;i < result->child.count();i++)
-	{
-		result->MyName += result->child.at(i)->MyName + ((i+1)!=result->child.count()?", ":")");
-		result->child.at(i)->parent = result;
-	}
-	return result;
-
 }
 
 void WindowsBracketRecording::save()
