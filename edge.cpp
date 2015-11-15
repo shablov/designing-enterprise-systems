@@ -194,6 +194,6 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 	painter->setBrush(Qt::white);
 	painter->drawEllipse(rect);
 
-	painter->drawText(rect.adjusted(5,12,0,0), QString::number(mFrequency).left(4));
+    painter->drawText(rect.adjusted(5,12,0,0), QString::number(mFrequency,'f',2));
 }
 //! [6]

@@ -20,6 +20,9 @@ math::~math()
 
 QString math::coefficients(MyMatrix matrix)
 {
+    qDebug()<<"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    matrix.display();
+
     matrix.display();
     QString result;
     double N,Ks,KSin,KSout,KSOin,KSOout;
@@ -144,15 +147,7 @@ void math::calc()
                 listTree.append(buff.at(buff2.indexOf(i)));
             }
 
-            MyMatrix newMat(matrix.getRows(),matrix.getCols(),0);
-            matrixDel = newMat;
 
-            for(int i = 0; i <  matrix.getRows();i++)
-                for(int j = 0; j <  matrix.getCols();j++)
-                    if (matrix.getData(i,j) != 0 )
-                        matrixDel.setData(i,j,1);
-                    else
-                        matrixDel.setData(i,j,0);
 
             qDebug()<< "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
             matrixDel.display();
@@ -175,10 +170,9 @@ void math::calc()
                     }
                 }
             }
-            SaveResultInStr("Объединение:",matrix,listTree);
+           // SaveResultInStr("Объединение:",matrix,listTree);
         }
     }
-
 }
 
 void math::calc(QList<BlockItem *> listData, QList<BlockItem *> listProces, const int aX, const int aY)
@@ -199,18 +193,97 @@ void math::setListTree(myTree *tree)
 }
 void math::calc(myTree *tree)
 {
-    QList<myTree *> mTree;
 
-    if(listTree.indexOf(tree) == -1);
+    MyMatrix newMat(matrix.getRows(),matrix.getCols(),0);
+    matrixDel = newMat;
 
+    for(int i = 0; i <  matrix.getRows();i++)
+        for(int j = 0; j <  matrix.getCols();j++)
+            if (matrix.getData(i,j) != 0 )
+                matrixDel.setData(i,j,1);
+            else
+                matrixDel.setData(i,j,0);
+
+
+    mainList =  QList<QList<myTree *>>();
+    treeToList(tree,0);
+
+    qDebug()<<"00000000000000000000000000000000000000000000000000";
+
+    for(int i = 0; i < mainList.count() ;i++)
+
+        for(int j = 0; j < mainList.at(i).count();j++)
+            qDebug()<<mainList.count()*100 + i<<" "<<mainList.at(i).count()*100 + j << " " + mainList.at(i).at(j)->MyName;
+
+    if (mainList.count() < 2) return;
+
+    for(int i = mainList.count() - 1; i > 0;i--)
+    {
+        for(int j = 0; j < mainList.at(i).count();j++)
+        {
+            qDebug()<<i;
+            QList<myTree *> mTree;// =  QList<myTree *>;
+            for (int k = 0;k< mainList.at(i).at(j)->child.count();k++)
+            {
+                mTree.append(mainList.at(i).at(j)->child.at(k));
+            }
+            if (mTree.count() > 1)
+                unionMatrix(mTree);
+        }
+
+        for (int i = 0;i< matrix.getCols();i++)
+        {
+            for (int j = 0;j< matrix.getRows();j++)
+            {
+                int val = matrixDel.getData(j,i);
+                if(val != 0)
+                {
+                    matrix.setData(j,i,matrix.getData(j,i)/val);
+                }
+            }
+        }
+        SaveResultInStr("Объединение:",matrix,listTree);
+
+        MyMatrix newMat(matrix.getRows(),matrix.getCols(),0);
+        matrixDel = newMat;
+
+        for(int i = 0; i <  matrix.getRows();i++)
+            for(int j = 0; j <  matrix.getCols();j++)
+                if (matrix.getData(i,j) != 0 )
+                    matrixDel.setData(i,j,1);
+                else
+                    matrixDel.setData(i,j,0);
+
+    }
+
+
+
+    /*
     for (int i = 0;i<tree->child.count();i++)
     {
         if (listTree.indexOf(tree->child.at(i)) == -1)
             calc(tree->child.at(i));
         mTree.append(tree->child.at(i));
     }
-    if (tree!= pTree) unionMatrix(mTree);
+    if (tree!= pTree) unionMatrix(mTree);*/
 }
+
+void math::treeToList(myTree *tree,int level)
+{
+    QList<myTree *> a = QList<myTree *>();
+    qDebug()<<tree->MyName;
+    while(mainList.count() <= level)
+        mainList.append(QList<myTree *>());
+    qDebug()<<'b';
+
+    mainList[level].append(tree);
+    qDebug()<<'c';
+
+    for(int i = 0; i <tree->child.count(); i++)
+        treeToList( tree->child.at(i),level + 1);
+
+}
+
 
 
 void math::unionMatrix(QList<myTree *> tree)
@@ -249,7 +322,7 @@ void math::unionMatrix(QList<myTree *> tree)
                 newMat.PlusData(newTreeList.indexOf(listTree.at(j)),newTreeList.indexOf(listTree.at(i)),matrix.getData(j,i));
                 newMatDel.PlusData(newTreeList.indexOf(listTree.at(j)),newTreeList.indexOf(listTree.at(i)),matrixDel.getData(j,i));
 
-               // qDebug()<<"\n1 "<<newTreeList.indexOf(listTree.at(j))<<" "<<newTreeList.indexOf(listTree.at(i))<<matrix.getData(j,i);
+                // qDebug()<<"\n1 "<<newTreeList.indexOf(listTree.at(j))<<" "<<newTreeList.indexOf(listTree.at(i))<<matrix.getData(j,i);
 
                 //newMatDel.PlusData(newTreeList.indexOf(listTree.at(j)),newTreeList.indexOf(listTree.at(i)),1);
             }
@@ -260,7 +333,7 @@ void math::unionMatrix(QList<myTree *> tree)
 
                 //qDebug()<<"\n2 "<<newTreeList.indexOf(listTree.at(j))<<" "<<newTreeList.count()-1<<matrix.getData(j,i);
                 //if(matrix.getData(j,i) != 0)
-               //     matNumberNotNull.PlusData(newTreeList.indexOf(listTree.at(j)),newTreeList.count()-1,1);
+                //     matNumberNotNull.PlusData(newTreeList.indexOf(listTree.at(j)),newTreeList.count()-1,1);
             }
             else
             {
@@ -272,10 +345,10 @@ void math::unionMatrix(QList<myTree *> tree)
                 //    matNumberNotNull.PlusData(newTreeList.count()-1,newTreeList.indexOf(listTree.at(i)),1);
             }
 
-            qDebug()<<"matixA";
+            //   qDebug()<<"matixA";
             matrix.setData(j,i,0);
             matrix.display();
-            qDebug()<<"matixB";
+            //  qDebug()<<"matixB";
             newMat.display();
         }
     }
@@ -286,7 +359,7 @@ void math::unionMatrix(QList<myTree *> tree)
     matrix.display();
     matrix = newMat;
     matrixDel = newMatDel;
-    qDebug()<<"matix";
+    //  qDebug()<<"matix";
     matrix.display();
 
 
@@ -311,6 +384,8 @@ void math::SaveResultInStr(QString str, MyMatrix m, QList<myTree *> list)
         Vichisleniya+= "\n";
     }
 }
+
+
 
 void math::SaveResultInStr(QString str, MyMatrix m, QStringList *list)
 {

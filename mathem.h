@@ -29,6 +29,9 @@ private:
     void SaveResultInStr(QString str, MyMatrix m, QStringList *list);
 	void SaveResultInStr(QString str, MyMatrix m,QList<myTree *> list);
 
+    void treeToList(myTree *tree,int level);
+
+    QList<QList<myTree *>> mainList;
 	QStringList list;
 	QStringList checklist;
 	QList<myTree *> listTree;

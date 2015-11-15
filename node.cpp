@@ -57,7 +57,7 @@ Node::Node(DesigningViewF *graphWidget,double fre, QString text,BlockType pType)
 
 
 	QGraphicsTextItem *textItemFre = new QGraphicsTextItem(this);
-	textItemFre->setPlainText(QString::number(fre));
+    textItemFre->setPlainText(QString::number(fre,'f',2));
 	textItemFre->setPos(-50, 30);
 	textItemFre->setTextWidth(100);
 
