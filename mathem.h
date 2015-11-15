@@ -7,7 +7,7 @@
 #include "windowsbracketrecording.h"
 #include <QMessageBox>
 class math
-{
+{//
 public:
 	math();
 	~math();
@@ -33,7 +33,8 @@ private:
 	QStringList checklist;
 	QList<myTree *> listTree;
 	myTree *pTree;
-	MyMatrix matrix;
+    MyMatrix matrix;
+    MyMatrix matrixDel;
 	QString Vichisleniya;
 
 };

@@ -15,7 +15,7 @@
 #include "QFileDialog"
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
-{
+{//
 	setWindowTitle(tr("Designing enterprise systems"));
 	setGeometry(100,100,720,720);
 	createAction();
@@ -173,7 +173,7 @@ void MainWindow::newProject()
 
 void MainWindow::onOpenFile()
 {
-
+/*
 	QMessageBox msgBox;
 	msgBox.setText("Сохранить проект?" );
 	msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -203,7 +203,7 @@ void MainWindow::onOpenFile()
 		return;
 		break;
 	}
-
+*/
 
 
 	path = QFileDialog::getOpenFileName(this,
